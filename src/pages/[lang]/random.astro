@@ -1,4 +1,6 @@
 ---
+export const prerender = false;
+
 import Welcome from "../../components/Welcome.astro";
 import Layout from "../../layouts/Layout.astro";
 import { executeQuery } from "../../lib/datocms";
@@ -20,5 +22,5 @@ const random = Math.round(Math.random() * 100);
 ---
 
 <Layout pageTitle={`[${lang.toUpperCase()}] DTD template`} locale={lang}>
-  <Welcome cta=`Hello world static ${random}` />
+  <Welcome cta=`Hello world dynamic ${random}` />
 </Layout>

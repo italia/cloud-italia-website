@@ -1,3 +1,11 @@
+---
+type Props = {
+  cta: string;
+};
+
+const { cta } = Astro.props;
+---
+
 <section class="it-hero-wrapper">
   <div class="container">
     <div class="row">
@@ -11,9 +19,7 @@
             Eu nisl nunc mi ipsum faucibus.
           </p>
           <div class="it-btn-container">
-            <a class="btn btn-sm btn-outline-primary" href="#"
-              >Azione primaria
-            </a>
+            <a class="btn btn-sm btn-outline-primary" href="#">{cta}</a>
           </div>
         </div>
       </div>

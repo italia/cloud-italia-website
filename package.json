@@ -13,6 +13,7 @@
     "tada-check": "gql-tada check"
   },
   "dependencies": {
+    "@astrojs/vercel": "^8.2.5",
     "@datocms/cda-client": "^0.2.7",
     "astro": "^5.12.3",
     "bootstrap-italia": "^2.16.0",
