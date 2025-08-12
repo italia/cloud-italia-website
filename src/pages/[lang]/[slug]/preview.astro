@@ -1,0 +1,25 @@
+---
+export const prerender = false;
+import Layout from "../../../layouts/Layout.astro";
+import { executeQuery } from "../../../lib/datocms";
+import type { SiteLocale } from "../../../graphql/types";
+import { PageBySlugQuery } from "../../../utils/query";
+import type { TitleMetaLinkTag } from "@datocms/astro";
+
+const { lang, slug } = Astro.params;
+
+const response = await executeQuery(PageBySlugQuery, {
+  variables: { slug: slug!, locale: lang as SiteLocale },
+  includeDrafts: true,
+});
+
+const page = response.page;
+---
+
+<Layout
+  pageTitle={`[${lang?.toUpperCase()}] ${page?.title}`}
+  locale={lang!}
+  pageSeo={page?.seo as TitleMetaLinkTag[]}
+>
+  <h1>{page?.title}</h1>
+</Layout>
