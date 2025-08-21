@@ -1,10 +1,17 @@
 ---
-export const prerender = false;
+import type { TitleMetaLinkTag } from "@datocms/astro";
 import Layout from "../../../layouts/Layout.astro";
 import { executeQuery } from "../../../lib/datocms";
-import type { SiteLocale } from "../../../graphql/types";
 import { PageBySlugQuery } from "../../../utils/query";
-import type { TitleMetaLinkTag } from "@datocms/astro";
+import type { SiteLocale } from "../../../graphql/types";
+import { isDraftModeEnabled } from "../../../lib/draftMode";
+
+export const prerender = false;
+
+const draftModeEnabled = isDraftModeEnabled(Astro.cookies);
+if (!draftModeEnabled) {
+  return Astro.redirect("/");
+}
 
 const { lang, slug } = Astro.params;
 
@@ -14,7 +21,21 @@ const response = await executeQuery(PageBySlugQuery, {
 });
 
 const page = response.page;
+
+const redirectUrl =
+  typeof lang === "string" && typeof slug === "string"
+    ? `/${lang}/${slug}`
+    : "/";
 ---
+
+<style>
+  .btn-exit-preview {
+    position: fixed;
+    right: 1rem;
+    bottom: 1rem;
+    z-index: 1000;
+  }
+</style>
 
 <Layout
   pageTitle={`[${lang?.toUpperCase()}] ${page?.title}`}
@@ -22,4 +43,13 @@ const page = response.page;
   pageSeo={page?.seo as TitleMetaLinkTag[]}
 >
   <h1>{page?.title}</h1>
+
+  <a
+    type="button"
+    class="btn btn-secondary btn-xs btn-exit-preview"
+    href={`/api/draft-mode/disable?url=${encodeURIComponent(redirectUrl)}`}
+    aria-label="Exit draft mode"
+  >
+    Exit draft mode
+  </a>
 </Layout>
