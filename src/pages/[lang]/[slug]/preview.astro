@@ -5,6 +5,7 @@ import { executeQuery } from "../../../lib/datocms";
 import { PageBySlugQuery } from "../../../utils/query";
 import type { SiteLocale } from "../../../graphql/types";
 import { isDraftModeEnabled } from "../../../lib/draftMode";
+import DraftModeQueryListener from "../../../components/DraftModeQueryListener.astro";
 
 export const prerender = false;
 
@@ -35,3 +36,7 @@ const redirectUrl =
 >
   <h1>{page?.title}</h1>
 </Layout>
+<DraftModeQueryListener
+  query={PageBySlugQuery}
+  variables={{ slug: slug!, locale: lang as SiteLocale }}
+/>
