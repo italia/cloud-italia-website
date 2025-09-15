@@ -1,4 +1,6 @@
 ---
+import { BarChart } from "../../components/charts/BarChart";
+import { LineChart } from "../../components/charts/LineChart";
 import Welcome from "../../components/Welcome.astro";
 import Layout from "../../layouts/Layout.astro";
 import { executeQuery } from "../../lib/datocms";
@@ -21,4 +23,6 @@ const random = Math.round(Math.random() * 100);
 
 <Layout locale={lang}>
   <Welcome cta=`Hello world static ${random}` />
+  <BarChart client:only="react" />
+  <LineChart client:only="react" />
 </Layout>
