@@ -2295,6 +2295,16 @@ enum ItemStatus {
   published
 }
 
+scalar JsonField
+
+"""Specifies how to filter JSON fields"""
+input JsonFilter {
+  """
+  Filter records with the specified field defined (i.e. with any value) or not
+  """
+  exists: BooleanType
+}
+
 scalar MetaTagAttributes
 
 enum MuxThumbnailFormatType {
@@ -2322,6 +2332,7 @@ input PageModelFilter {
   _status: StatusFilter
   _updatedAt: UpdatedAtFilter
   _isValid: BooleanFilter
+  chartData: JsonFilter
   seo: SeoFilter
   slug: SlugFilter
   title: StringFilter
@@ -2390,6 +2401,7 @@ type PageRecord implements RecordInterface {
   _status: ItemStatus!
   _unpublishingScheduledAt: DateTime
   _updatedAt: DateTime!
+  chartData: JsonField
   id: ItemId!
   seo(
     """The locale to use to fetch the field's content"""
