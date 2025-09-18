@@ -44,6 +44,7 @@ export const PageBySlugQuery = graphql(
         seo: _seoMetaTags(locale: $locale) {
           ...TagFragment
         }
+        chartData
       }
     }
   `,
