@@ -68,7 +68,7 @@ type ChartElementRecord implements RecordInterface {
   _updatedAt: DateTime!
   chartData: JsonField
   id: ItemId!
-  title: String
+  title: String!
 }
 
 type CollectionMetadata {
