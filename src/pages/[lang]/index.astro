@@ -1,5 +1,4 @@
 ---
-import { ExampleLineChart } from "../../components/charts/ExampleLineChart";
 import Welcome from "../../components/Welcome.astro";
 import Layout from "../../layouts/Layout.astro";
 import { executeQuery } from "../../lib/datocms";
@@ -22,5 +21,4 @@ const random = Math.round(Math.random() * 100);
 
 <Layout locale={lang}>
   <Welcome cta=`Hello world static ${random}` />
-  <ExampleLineChart client:only="react" />
 </Layout>
