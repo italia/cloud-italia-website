@@ -1,5 +1,10 @@
 import { graphql } from "../graphql/graphql";
-import { TagFragment, LocaleFragment } from "../graphql/commonFragments";
+import {
+  TagFragment,
+  LocaleFragment,
+  ChartFragment,
+  KpiFragment,
+} from "../graphql/commonFragments";
 
 export const LocalesQuery = graphql(`
   query Locales {
@@ -44,8 +49,14 @@ export const PageBySlugQuery = graphql(
         seo: _seoMetaTags(locale: $locale) {
           ...TagFragment
         }
+        chart {
+          ...ChartFragment
+        }
+        kpi {
+          ...KpiFragment
+        }
       }
     }
   `,
-  [TagFragment],
+  [TagFragment, ChartFragment, KpiFragment],
 );
