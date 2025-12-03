@@ -1,0 +1,39 @@
+---
+import "./style.scss";
+import type { ChipLinkProps } from "./types";
+type Props = ChipLinkProps;
+
+const {
+  label,
+  visuallyHidden,
+  linkTo,
+  variant = "standard",
+  disabled = false,
+  size = "default",
+} = Astro.props;
+
+const sizeMap = {
+  default: "",
+  large: "chip-lg",
+};
+const sizeClass = sizeMap[size];
+
+const variantMap = {
+  standard: "",
+  "outline-white": "chip-outline-white",
+  primary: "chip-primary",
+};
+
+const chipVariant = variantMap[variant];
+
+const disabledClass = disabled ? "chip-disabled" : "";
+const finalHref = disabled ? undefined : linkTo;
+const ariaDisabled = disabled ? "true" : "false";
+
+const className = `chip chip-simple ${chipVariant} ${disabledClass} ${sizeClass}`;
+---
+
+<a class={className} href={finalHref} aria-disabled={ariaDisabled}>
+  <span class="visually-hidden">{visuallyHidden}</span>
+  <span class="chip-label">{label}</span>
+</a>

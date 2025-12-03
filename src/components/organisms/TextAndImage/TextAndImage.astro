@@ -1,0 +1,71 @@
+---
+import { CardEditorialWithIcon } from "../../molecules/CardEditorialWithIcon";
+import TextContainer from "../../molecules/TextContainer/TextContainer.astro";
+import { SectionContainer } from "../SectionContainer";
+import type { TextAndImageProps } from "./types";
+
+type Props = TextAndImageProps;
+
+const {
+  title,
+  paragraph,
+  labelButton,
+  imgUrl,
+  imgTitle = "",
+  imgAlt = "",
+  variant = "default",
+  cards,
+  labelCards,
+} = Astro.props;
+
+const backgroundColor = {
+  default: "",
+  big: "bg-primary",
+  withBox: "primary-bg-a10",
+};
+const backgroundColorClass = backgroundColor[variant];
+
+const textContainerVariant =
+  variant === "big" || variant === "withBox" ? "primary" : undefined;
+const textLabelColorClass =
+  variant === "big" || variant === "withBox" ? "text-white" : undefined;
+const firstElementClass =
+  variant === "big" ? "col-lg-4  col-12" : "col-lg-6 col-12";
+const secondElementClass =
+  variant === "big" ? "col-lg-8 col-12" : "col-lg-5 col-12";
+const alignItems = variant === "big" ? "align-items-top" : "align-items-center";
+---
+
+<SectionContainer className={backgroundColorClass}>
+  <div class=`row ${alignItems} justify-content-between `>
+    <div class={firstElementClass}>
+      <TextContainer
+        title={title}
+        paragraph={paragraph}
+        labelButton={labelButton}
+        variant={textContainerVariant}
+      />
+    </div>
+    <div class={secondElementClass}>
+      <div class="img-container">
+        <div class="ratio ratio-4x3">
+          <img src={imgUrl} title={imgTitle} alt={imgAlt} />
+        </div>
+      </div>
+    </div>
+  </div>
+  {
+    cards && (
+      <div class="row align-item-center justify-content-between pt-5">
+        <p class={`fw-semibold fs-6 text-uppercase ${textLabelColorClass}`}>
+          {labelCards}
+        </p>
+        {cards.map((card) => (
+          <div class="col-12 col-md-6 mb-3 mb-md-4 col-lg-4">
+            <CardEditorialWithIcon {...card} />
+          </div>
+        ))}
+      </div>
+    )
+  }
+</SectionContainer>

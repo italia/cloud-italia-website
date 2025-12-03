@@ -1,0 +1,44 @@
+---
+import "./style.scss";
+import type { HeroProps } from "./types";
+type Props = HeroProps;
+
+const {
+  title,
+  paragraph,
+  imageUrl,
+  imageTitle = "",
+  imageAlt = "",
+  size,
+  category,
+} = Astro.props;
+const sizeClass =
+  size === "xsmall"
+    ? "xsmall-size"
+    : size === "small"
+      ? "small-size"
+      : "default-size";
+---
+
+<section class=`it-hero-wrapper it-primary ${sizeClass}`>
+  <div class="img-responsive-wrapper">
+    <div class="img-responsive">
+      <div class="img-wrapper">
+        <img src={imageUrl} title={imageTitle} alt={imageAlt} />
+      </div>
+    </div>
+  </div>
+
+  <div class="container">
+    <div class="row">
+      <div class="col-12">
+        <div class="it-hero-text-wrapper">
+          {category && <span class="it-category ">{category}</span>}
+          <slot name="category" />
+          <h1>{title}</h1>
+          <p class="d-none d-lg-block font-sans-serif">{paragraph}</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

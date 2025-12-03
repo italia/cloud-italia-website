@@ -1,0 +1,37 @@
+@use "bootstrap-italia/src/scss/bootstrap-italia" as *;
+
+.chip.chip-outline-white {
+  background-color: transparent;
+  border-color: $white;
+  text-decoration: none;
+}
+
+.chip.chip-simple {
+  text-decoration: none;
+}
+
+.chip.chip-outline-white:hover {
+  border: 1px solid $white;
+  background: $primary-a10;
+}
+
+.chip.chip-outline-white:active {
+  background: $white;
+}
+
+.chip.chip-outline-white .chip-label {
+  color: $white;
+}
+
+.chip.chip-outline-white .chip-label:active {
+  color: $primary-a10;
+}
+
+.chip.chip-outline-white.chip-disabled {
+  border: 1px solid $gray-border;
+  background: $gray-100;
+}
+
+.chip.chip-outline-white.chip-disabled .chip-label {
+  color: $color-text-secondary;
+}

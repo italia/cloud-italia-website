@@ -1,0 +1,25 @@
+---
+import type { TabItemProps } from "./types";
+
+type Props = TabItemProps;
+
+const { id, label, active, disabled } = Astro.props;
+
+const disabledClass = "disabled";
+const textColor = disabled ? "text-gray-400" : "text-white";
+const borderColor = active ? "border-white" : "border-gray-400";
+const className = `nav-link border-bottom border-3 ${disabled && disabledClass} ${textColor} ${borderColor}`;
+
+const ariaCurrent = active ? "page" : undefined;
+const tabIndex = disabled ? "-1" : undefined;
+const ariaDisabled = disabled ? "true" : undefined;
+---
+
+<li id={id} class="nav-item">
+  <a
+    class={className}
+    aria-current={ariaCurrent}
+    tabindex={tabIndex}
+    aria-disabled={ariaDisabled}>{label}</a
+  >
+</li>

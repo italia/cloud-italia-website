@@ -1,0 +1,10 @@
+---
+import "./style.scss";
+
+type Props = {
+  content: string;
+};
+const { content } = Astro.props;
+---
+
+<div class="icon-container icon-text" set:html={content} />

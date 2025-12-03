@@ -1,0 +1,28 @@
+---
+import type { ChipLinkProps } from "../../atoms/Chip/types";
+import FooterBrand from "./FooterBrand.astro";
+import FooterMain from "./FooterMain.astro";
+import FooterSmallPrints from "./FooterSmallPrints.astro";
+import type {
+  FooterBrandProps,
+  FooterLogoProps,
+  FooterSmallPrintsProps,
+  FooterTopicsProps,
+  FooterUtilityProps,
+} from "./types";
+
+type Props = {
+  brand: FooterBrandProps;
+  topics: FooterTopicsProps;
+  utilities: FooterUtilityProps[];
+  smallPrints: FooterSmallPrintsProps;
+};
+
+const { brand, utilities, topics, smallPrints } = Astro.props;
+---
+
+<footer class="it-footer">
+  <FooterBrand {...brand} />
+  <FooterMain topics={topics} utilities={utilities} />
+  <FooterSmallPrints {...smallPrints} />
+</footer>

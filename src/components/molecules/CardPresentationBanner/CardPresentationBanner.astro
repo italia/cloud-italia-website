@@ -1,0 +1,23 @@
+---
+import type { CardPresentationBannerProps } from "./types";
+
+type Props = CardPresentationBannerProps;
+
+const { title, description, icon, linkTo } = Astro.props;
+---
+
+<article
+  class="it-card it-card-banner it-card-height-full rounded shadow-sm border"
+>
+  <h3 class="it-card-title">
+    <a href={linkTo}>{title}</a>
+  </h3>
+  <div class="it-card-banner-icon-wrapper">
+    <svg class="icon icon-primary icon-xl" aria-hidden="true"
+      ><use href=`/bsi-svg/sprites.svg#${icon}`></use></svg
+    >
+  </div>
+  <div class="it-card-body">
+    <p class="it-card-text">{description}</p>
+  </div>
+</article>
