@@ -5,6 +5,7 @@ import type {
   SupportCTASectionSizeProps,
   SupportCTASectionVariantProps,
 } from "@components/organisms/SupportCTASection/types";
+import { linkResolver } from "@data/linkMap";
 
 type DatoRecord = SupportCTASectionFragmentType & {
   __typename: string;
@@ -16,6 +17,7 @@ type Props = {
 };
 
 const { block } = Astro.props;
+const { lang } = Astro.locals;
 
 const getCtaFields = () => {
   const cta = block.cta;
@@ -31,7 +33,7 @@ const getCtaFields = () => {
     case "InternalLinkRecord":
       return {
         labelButton: cta.label,
-        linkTo: cta.linkTo?.slug,
+        linkTo: linkResolver(cta.linkTo?.id, lang),
       };
     default:
       return {
