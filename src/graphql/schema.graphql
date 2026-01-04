@@ -979,6 +979,7 @@ type HeroRecord implements RecordInterface {
   _status: ItemStatus!
   _unpublishingScheduledAt: DateTime
   _updatedAt: DateTime!
+  backgroundColor: String
   backgroundImage: FileField!
   category: String
   id: ItemId!
@@ -989,6 +990,7 @@ type HeroRecord implements RecordInterface {
   showBreadcrumb: BooleanType!
   size: String
   title: String!
+  variant: String
 }
 
 """Block of type ✨ Highlight (highlight)"""
@@ -3093,6 +3095,13 @@ input InUseFilter {
   eq: BooleanType
 }
 
+union InsightModelContentField = FaqSectionRecord | HeroRecord | ListCollectionRecord | StructuredTextRecord
+
+type InsightModelContentFieldListListNonNullMultiLocaleField {
+  locale: SiteLocale
+  value: [InsightModelContentField!]!
+}
+
 input InsightModelFilter {
   _createdAt: CreatedAtFilter
   id: ItemIdFilter
@@ -3106,6 +3115,8 @@ input InsightModelFilter {
   _locales: LocalesFilter
   abstract: TextFilter
   image: FileFilter
+  parentPage: LinkFilter
+  slug: SlugFilter
   title: StringFilter
   topic: LinkFilter
   OR: [InsightModelFilter]
@@ -3135,7 +3146,7 @@ enum InsightModelOrderBy {
   title_DESC
 }
 
-"""Record of type Insight (insight)"""
+"""Record of type 👁️ Insight (insight)"""
 type InsightRecord implements RecordInterface {
   _allAbstractLocales(
     """Process content as markdown"""
@@ -3146,18 +3157,42 @@ type InsightRecord implements RecordInterface {
     """
     fallbackLocales: [SiteLocale!]
   ): [StringNonNullMultiLocaleField!]
+  _allContentLocales(
+    """
+    If you want to fallback to a default translation when a translation has not been found
+    """
+    fallbackLocales: [SiteLocale!]
+  ): [InsightModelContentFieldListListNonNullMultiLocaleField!]
   _allImageLocales(
     """
     If you want to fallback to a default translation when a translation has not been found
     """
     fallbackLocales: [SiteLocale!]
   ): [FileFieldNonNullMultiLocaleField!]
+  _allParentPageLocales(
+    """
+    If you want to fallback to a default translation when a translation has not been found
+    """
+    fallbackLocales: [SiteLocale!]
+  ): [PageRecordMultiLocaleField!]
+  _allSlugLocales(
+    """
+    If you want to fallback to a default translation when a translation has not been found
+    """
+    fallbackLocales: [SiteLocale!]
+  ): [StringNonNullMultiLocaleField!]
   _allTitleLocales(
     """
     If you want to fallback to a default translation when a translation has not been found
     """
     fallbackLocales: [SiteLocale!]
   ): [StringNonNullMultiLocaleField!]
+  _allTopicLocales(
+    """
+    If you want to fallback to a default translation when a translation has not been found
+    """
+    fallbackLocales: [SiteLocale!]
+  ): [InsightTopicRecordNonNullMultiLocaleField!]
   _createdAt: DateTime!
 
   """Editing URL"""
@@ -3189,6 +3224,15 @@ type InsightRecord implements RecordInterface {
     """
     fallbackLocales: [SiteLocale!]
   ): String!
+  content(
+    """The locale to use to fetch the field's content"""
+    locale: SiteLocale
+
+    """
+    If you want to fallback to a default translation when a translation has not been found
+    """
+    fallbackLocales: [SiteLocale!]
+  ): [InsightModelContentField!]!
   id: ItemId!
   image(
     """The locale to use to fetch the field's content"""
@@ -3199,6 +3243,24 @@ type InsightRecord implements RecordInterface {
     """
     fallbackLocales: [SiteLocale!]
   ): FileField!
+  parentPage(
+    """The locale to use to fetch the field's content"""
+    locale: SiteLocale
+
+    """
+    If you want to fallback to a default translation when a translation has not been found
+    """
+    fallbackLocales: [SiteLocale!]
+  ): PageRecord
+  slug(
+    """The locale to use to fetch the field's content"""
+    locale: SiteLocale
+
+    """
+    If you want to fallback to a default translation when a translation has not been found
+    """
+    fallbackLocales: [SiteLocale!]
+  ): String!
   title(
     """The locale to use to fetch the field's content"""
     locale: SiteLocale
@@ -3208,7 +3270,15 @@ type InsightRecord implements RecordInterface {
     """
     fallbackLocales: [SiteLocale!]
   ): String!
-  topic: InsightTopicRecord!
+  topic(
+    """The locale to use to fetch the field's content"""
+    locale: SiteLocale
+
+    """
+    If you want to fallback to a default translation when a translation has not been found
+    """
+    fallbackLocales: [SiteLocale!]
+  ): InsightTopicRecord!
 }
 
 input InsightTopicModelFilter {
@@ -3249,7 +3319,7 @@ enum InsightTopicModelOrderBy {
   label_DESC
 }
 
-"""Record of type Insight topic (insight_topic)"""
+"""Record of type 🏷️ Insight topic (insight_topic)"""
 type InsightTopicRecord implements RecordInterface {
   _createdAt: DateTime!
 
@@ -3271,6 +3341,11 @@ type InsightTopicRecord implements RecordInterface {
   _updatedAt: DateTime!
   id: ItemId!
   label: String!
+}
+
+type InsightTopicRecordNonNullMultiLocaleField {
+  locale: SiteLocale
+  value: InsightTopicRecord!
 }
 
 """
@@ -3509,7 +3584,7 @@ type LangRecord implements RecordInterface {
   ): String!
 }
 
-"""Record of type 🔳 Layout (layout)"""
+"""Record of type 🔲 Layout (layout)"""
 type LayoutRecord implements RecordInterface {
   _allHeadingLocales(
     """Process content as markdown"""
@@ -4227,6 +4302,11 @@ type NewsPageRecord implements RecordInterface {
     """
     fallbackLocales: [SiteLocale!]
   ): String!
+}
+
+type NewsPageRecordMultiLocaleField {
+  locale: SiteLocale
+  value: NewsPageRecord
 }
 
 """Block of type News tab (news_tab)"""
@@ -5500,7 +5580,7 @@ type SettingsKpiRecordMultiLocaleField {
   value: SettingsKpiRecord
 }
 
-"""Record of type Sidebar for articles (sidebar_for_article)"""
+"""Record of type 🪾 Sidebar for articles (sidebar_for_article)"""
 type SidebarForArticleRecord implements RecordInterface {
   _allCloseLabelLocales(
     """
@@ -5687,6 +5767,13 @@ input StatusFilter {
   notIn: [ItemStatus]
 }
 
+union StoryItemModelContentField = HeroRecord | SectionRecord | StructuredTextRecord | SupportCtaSectionRecord
+
+type StoryItemModelContentFieldListListNonNullMultiLocaleField {
+  locale: SiteLocale
+  value: [StoryItemModelContentField!]!
+}
+
 input StoryItemModelFilter {
   _createdAt: CreatedAtFilter
   id: ItemIdFilter
@@ -5701,6 +5788,7 @@ input StoryItemModelFilter {
   category: StringFilter
   dateOfPublication: DateFilter
   image: FileFilter
+  parentPage: LinkFilter
   slug: SlugFilter
   title: StringFilter
   OR: [StoryItemModelFilter]
@@ -5734,7 +5822,7 @@ enum StoryItemModelOrderBy {
   title_DESC
 }
 
-"""Record of type 📰 Story item (story_item)"""
+"""Record of type 📓 Story item (story_item)"""
 type StoryItemRecord implements RecordInterface {
   _allCategoryLocales(
     """
@@ -5742,12 +5830,24 @@ type StoryItemRecord implements RecordInterface {
     """
     fallbackLocales: [SiteLocale!]
   ): [StringNonNullMultiLocaleField!]
+  _allContentLocales(
+    """
+    If you want to fallback to a default translation when a translation has not been found
+    """
+    fallbackLocales: [SiteLocale!]
+  ): [StoryItemModelContentFieldListListNonNullMultiLocaleField!]
   _allDateOfPublicationLocales(
     """
     If you want to fallback to a default translation when a translation has not been found
     """
     fallbackLocales: [SiteLocale!]
   ): [DateNonNullMultiLocaleField!]
+  _allParentPageLocales(
+    """
+    If you want to fallback to a default translation when a translation has not been found
+    """
+    fallbackLocales: [SiteLocale!]
+  ): [NewsPageRecordMultiLocaleField!]
   _allSlugLocales(
     """
     If you want to fallback to a default translation when a translation has not been found
@@ -5788,6 +5888,15 @@ type StoryItemRecord implements RecordInterface {
     """
     fallbackLocales: [SiteLocale!]
   ): String!
+  content(
+    """The locale to use to fetch the field's content"""
+    locale: SiteLocale
+
+    """
+    If you want to fallback to a default translation when a translation has not been found
+    """
+    fallbackLocales: [SiteLocale!]
+  ): [StoryItemModelContentField!]!
   dateOfPublication(
     """The locale to use to fetch the field's content"""
     locale: SiteLocale
@@ -5799,6 +5908,15 @@ type StoryItemRecord implements RecordInterface {
   ): Date!
   id: ItemId!
   image: FileField!
+  parentPage(
+    """The locale to use to fetch the field's content"""
+    locale: SiteLocale
+
+    """
+    If you want to fallback to a default translation when a translation has not been found
+    """
+    fallbackLocales: [SiteLocale!]
+  ): NewsPageRecord
   slug(
     """The locale to use to fetch the field's content"""
     locale: SiteLocale
@@ -5919,6 +6037,37 @@ input StructuredTextFilter {
   Filter records with the specified field defined (i.e. with any value) or not [DEPRECATED]
   """
   exists: BooleanType
+}
+
+type StructuredTextModelContentField {
+  blocks: [CalloutRecord!]!
+  inlineBlocks: [String!]!
+  links: [String!]!
+  value: JsonField!
+}
+
+"""Block of type Structured text (structured_text)"""
+type StructuredTextRecord implements RecordInterface {
+  _createdAt: DateTime!
+
+  """Editing URL"""
+  _editingUrl: String
+  _firstPublishedAt: DateTime!
+  _isValid: BooleanType!
+  _modelApiKey: String!
+  _publicationScheduledAt: DateTime
+  _publishedAt: DateTime!
+
+  """Generates SEO and Social card meta tags to be used in your frontend"""
+  _seoMetaTags(
+    """The locale to use to fetch the field's content"""
+    locale: SiteLocale
+  ): [Tag!]!
+  _status: ItemStatus!
+  _unpublishingScheduledAt: DateTime
+  _updatedAt: DateTime!
+  content: StructuredTextModelContentField!
+  id: ItemId!
 }
 
 """Block of type ⌨️ Support channels section (support_channels_section)"""
@@ -6781,6 +6930,8 @@ input WebinarItemModelFilter {
   date: DateFilter
   image: FileFilter
   paragraph: TextFilter
+  parentPage: LinkFilter
+  slug: SlugFilter
   title: StringFilter
   topic: LinkFilter
   OR: [WebinarItemModelFilter]
@@ -6812,7 +6963,7 @@ enum WebinarItemModelOrderBy {
   title_DESC
 }
 
-"""Record of type 📰 Webinar Item (webinar_item)"""
+"""Record of type 🎤 Webinar Item (webinar_item)"""
 type WebinarItemRecord implements RecordInterface {
   _allDateLocales(
     """
@@ -6824,6 +6975,12 @@ type WebinarItemRecord implements RecordInterface {
     """Process content as markdown"""
     markdown: Boolean
 
+    """
+    If you want to fallback to a default translation when a translation has not been found
+    """
+    fallbackLocales: [SiteLocale!]
+  ): [StringNonNullMultiLocaleField!]
+  _allSlugLocales(
     """
     If you want to fallback to a default translation when a translation has not been found
     """
@@ -6875,6 +7032,16 @@ type WebinarItemRecord implements RecordInterface {
     """Process content as markdown"""
     markdown: Boolean
 
+    """The locale to use to fetch the field's content"""
+    locale: SiteLocale
+
+    """
+    If you want to fallback to a default translation when a translation has not been found
+    """
+    fallbackLocales: [SiteLocale!]
+  ): String!
+  parentPage: NewsPageRecord
+  slug(
     """The locale to use to fetch the field's content"""
     locale: SiteLocale
 
@@ -6942,7 +7109,7 @@ enum WebinarTopicModelOrderBy {
   label_DESC
 }
 
-"""Record of type Webinar topic (webinar_topic)"""
+"""Record of type 🏷️ Webinar topic (webinar_topic)"""
 type WebinarTopicRecord implements RecordInterface {
   _allLabelLocales(
     """

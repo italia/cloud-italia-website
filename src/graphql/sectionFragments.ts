@@ -2,6 +2,7 @@ import {
   AccordionBlockFragment,
   AccordionFragment,
   AdditionalContentFragment,
+  CalloutFragment,
   ChannelFragment,
   ChartFragment,
   ExternalLinkFragment,
@@ -25,11 +26,13 @@ export const HeroFragment = graphql(
   `
     fragment HeroFragment on HeroRecord @_unmask {
       id
-      paragraph(markdown: true)
+      paragraph
       size
       title
       category
       showBreadcrumb
+      variant
+      backgroundColor
       backgroundImage {
         ...ImageFragment
       }
@@ -355,3 +358,26 @@ export const FooterFragment = graphql(`
 `);
 
 export type FooterFragmentType = FragmentOf<typeof FooterFragment>;
+
+export const StructuredTextFragment = graphql(
+  `
+    fragment StructuredTextFragment on StructuredTextModelContentField
+    @_unmask {
+      value
+      blocks {
+        ... on RecordInterface {
+          id
+          __typename
+        }
+        ... on CalloutRecord {
+          ...CalloutFragment
+        }
+      }
+    }
+  `,
+  [CalloutFragment],
+);
+
+export type StructuredTextFragmentType = FragmentOf<
+  typeof StructuredTextFragment
+>;

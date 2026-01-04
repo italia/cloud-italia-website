@@ -7,13 +7,19 @@ import DataSectionAdapter from "@components/cms-adapters/datocms/DataSectionAdap
 import FAQSectionAdapter from "@components/cms-adapters/datocms/FAQSectionAdapter.astro";
 import type {
   HomepageModelContentFragmentType,
+  InsightContentFragmentType,
   PageContentFragmentType,
 } from "@graphql/templateFragments";
 import UseCaseContainerAdapter from "@components/cms-adapters/datocms/UseCaseContainerAdapter.astro";
 import TopicFilterAdapter from "@components/cms-adapters/datocms/TopicFilterAdapter.astro";
-import SupportCTASectionAdapter from "./SupportCTASectionAdapter.astro";
+import SupportCTASectionAdapter from "@components/cms-adapters/datocms/SupportCTASectionAdapter.astro";
+import StructuredTextAdapter from "@components/cms-adapters/datocms/StructuredTextAdapter.astro";
+import ListCollectionAdapter from "@components/cms-adapters/datocms/ListCollectionAdapter.astro";
 
-type ContentType = HomepageModelContentFragmentType | PageContentFragmentType;
+type ContentType =
+  | HomepageModelContentFragmentType
+  | PageContentFragmentType
+  | InsightContentFragmentType;
 
 type Props = {
   content: ContentType[];
@@ -44,6 +50,10 @@ const { content, sitename } = Astro.props;
         return <TopicFilterAdapter block={block} />;
       case "SupportCtaSectionRecord":
         return <SupportCTASectionAdapter block={block} />;
+      case "StructuredTextRecord":
+        return <StructuredTextAdapter block={block.textContent} />;
+      case "ListCollectionRecord":
+        return <ListCollectionAdapter block={block} />;
       default:
         return null;
     }
