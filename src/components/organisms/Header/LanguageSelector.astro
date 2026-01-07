@@ -1,5 +1,5 @@
 ---
-import { linkMap, type RecordId } from "@data/linkMap";
+import { linkResolver } from "@data/linkMap";
 
 type Props = {
   locales: string[];
@@ -9,11 +9,8 @@ const { locales } = Astro.props;
 const { lang: currentLocale, recordId: currentRecordId } = Astro.locals;
 
 const getTranslatedHref = (targetLocale: string) => {
-  if (currentRecordId && linkMap[currentRecordId as RecordId]) {
-    return (
-      (linkMap[currentRecordId as RecordId] as any)[targetLocale] ||
-      `/${targetLocale}`
-    );
+  if (currentRecordId) {
+    return linkResolver(currentRecordId, targetLocale);
   }
   return `/${targetLocale}`;
 };
