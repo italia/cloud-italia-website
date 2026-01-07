@@ -3,9 +3,50 @@ import { Button } from "@components/atoms/Button";
 import { Chip, ChipLink } from "@components/atoms/Chip";
 import { IconContainer } from "@components/atoms/IconContainer";
 import { Link } from "@components/atoms/Link";
+import { Blockquote } from "@components/atoms/Blockquote";
+import Badge from "./atoms/Badge/Badge.astro";
 ---
 
 <h2 class="mb-4">Atoms</h2>
+
+<table class="table table-bordered">
+  <thead>
+    <tr>
+      <th>Badge</th>
+      <th>Primary</th>
+      <th>Secondary</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td></td>
+      <td class="p-3">
+        <Badge label="Badge example" variant="primary" />
+      </td>
+      <td class="p-3">
+        <Badge label="Badge example" variant="secondary" />
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+<table class="table table-bordered">
+  <thead>
+    <tr>
+      <th>Blockquote</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td class="p-3">
+        <Blockquote
+          author="Nome Cognome"
+          text="…Blockquote ipsum dolor sit amet, consectetur adipiscing elit. In sem maecenas nunc, felis tempor blandit. Erat commodo, mi, sit feugiat quisque."
+        />
+      </td>
+    </tr>
+  </tbody>
+</table>
 
 <table class="table table-bordered">
   <thead>
