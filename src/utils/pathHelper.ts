@@ -39,7 +39,7 @@ export type RoutableRecord =
 export function resolveRoutePath(
   record: RoutableRecord,
   locale: SiteLocale,
-  allRecords: RoutableRecord[],
+  allRecords?: RoutableRecord[],
 ) {
   const steps: Step[] = [];
 
