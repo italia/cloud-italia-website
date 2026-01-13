@@ -8,7 +8,6 @@ const {
   title,
   paragraph,
   image,
-  size,
   showBreadcrumb = false,
   variant = "default",
 } = Astro.props;
@@ -20,13 +19,17 @@ const sizeClass = variant === "small" ? "small-size" : "default-size";
 </style>
 
 <section class={`it-hero-wrapper it-primary ${sizeClass}`}>
-  <div class="img-responsive-wrapper">
-    <div class="img-responsive">
-      <div class="img-wrapper">
-        <Image {...image} />
+  {
+    image && (
+      <div class="img-responsive-wrapper">
+        <div class="img-responsive">
+          <div class="img-wrapper">
+            <Image {...image} />
+          </div>
+        </div>
       </div>
-    </div>
-  </div>
+    )
+  }
 
   <div class="container">
     <div class="row">

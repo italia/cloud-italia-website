@@ -1,5 +1,5 @@
 ---
-import type { SectionBackground } from "@components/layout/SplitContent/SplitContent.astro";
+import type { SectionBackground } from "@components/layout/SplitContent/types";
 import type { HeroProps } from "./types";
 import { Image } from "@components/atoms/Image";
 type Props = HeroProps;
@@ -41,11 +41,15 @@ const backgroundColorClassNames: Record<SectionBackground, string> = {
       </div>
 
       <div class="col-12 col-lg-4">
-        <div class="img-container">
-          <div class="ratio ratio-4x3">
-            <Image {...image} />
-          </div>
-        </div>
+        {
+          image && (
+            <div class="img-container">
+              <div class="ratio ratio-4x3">
+                <Image {...image} />
+              </div>
+            </div>
+          )
+        }
       </div>
     </div>
   </div>

@@ -1,5 +1,5 @@
 ---
-import type { SectionBackground } from "@components/layout/SplitContent/SplitContent.astro";
+import type { SectionBackground } from "@components/layout/SplitContent/types";
 import type { HeroProps } from "./types";
 import { Image } from "@components/atoms/Image";
 type Props = HeroProps;
@@ -26,13 +26,17 @@ const backgroundColorClassNames: Record<SectionBackground, string> = {
 <section
   class=`it-hero-wrapper it-hero-wrapper-full-height-image xsmall-size ${backgroundColorClassNames[backgroundColor]}`
 >
-  <div class="img-responsive-wrapper">
-    <div class="img-responsive">
-      <div class="img-wrapper">
-        <Image {...image} />
+  {
+    image && (
+      <div class="img-responsive-wrapper">
+        <div class="img-responsive">
+          <div class="img-wrapper">
+            <Image {...image} />
+          </div>
+        </div>
       </div>
-    </div>
-  </div>
+    )
+  }
 
   <div class="container">
     <div class="row">
