@@ -1,0 +1,84 @@
+import { AllDocumentsQuery } from "@graphql/query/indexing";
+import type { SiteLocale } from "@graphql/types";
+import { executeQuery } from "@lib/datocms";
+import {
+  getCataloguesMapCategory,
+  getCategoryName,
+  getTitleByTypeNews,
+  getTitleByTypeResourse,
+  resolveArticleCategory,
+} from "@utils/indexing/getCategory";
+import * as Mappers from "@utils/indexing/indexingMappers";
+import { LocalesQuery } from "@utils/query";
+import type { APIRoute } from "astro";
+
+export async function getStaticPaths() {
+  const {
+    site: { locales },
+  } = await executeQuery(LocalesQuery);
+  return locales.map((lang) => ({
+    params: {
+      lang,
+    },
+  }));
+}
+
+export const prerender = true;
+
+export const GET: APIRoute = async ({ params }) => {
+  const lang = params.lang as SiteLocale;
+
+  if (!lang) {
+    return new Response("Language parameter is missing", { status: 400 });
+  }
+
+  const response = await executeQuery(AllDocumentsQuery);
+  const articles = response.allArticles;
+  const insights = response.allInsights;
+  const stories = response.allStoryItems;
+  const newsItems = response.allNewsItems;
+  const webinars = response.allWebinarItems;
+  const resourses = response.allResources;
+  const pages = response.allPages;
+
+  const cataloguesMapCategory = getCataloguesMapCategory(
+    response.allCatalogues,
+    lang,
+  );
+
+  const articleCategory = resolveArticleCategory(articles, lang);
+  const insightCategory = getCategoryName(insights[0]?.parentPage, lang);
+  const storyCategory =
+    getTitleByTypeNews(cataloguesMapCategory, "story") || "";
+  const newsCategory = getTitleByTypeNews(cataloguesMapCategory, "news") || "";
+  const webinarCategory =
+    getTitleByTypeNews(cataloguesMapCategory, "webinar") || "";
+  const resourseCategory =
+    getTitleByTypeResourse(cataloguesMapCategory, "resource") || "";
+
+  return new Response(
+    JSON.stringify([
+      ...pages.map((item) => Mappers.getMapPages(item, lang)),
+      ...newsItems.map((item) => Mappers.getMapNews(item, lang, newsCategory)),
+      ...articles.flatMap((item) =>
+        Mappers.getMapArticle(item, lang, articleCategory),
+      ),
+      ...insights.map((item) =>
+        Mappers.getMapInsight(item, lang, insightCategory),
+      ),
+      ...stories.map((item) => Mappers.getMapStory(item, lang, storyCategory)),
+      ...webinars.map((item) =>
+        Mappers.getMapWebinar(item, lang, webinarCategory),
+      ),
+      ...resourses
+        .map((item) => Mappers.getMapResourse(item, lang, resourseCategory))
+        .filter(Boolean),
+    ]),
+    {
+      status: 200,
+      headers: {
+        "Content-Type": "application/json",
+      },
+    },
+  );
+};

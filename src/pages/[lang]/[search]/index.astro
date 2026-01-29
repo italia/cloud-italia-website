@@ -1,0 +1,62 @@
+---
+import type { SiteLocale } from "@graphql/types";
+import Layout from "@layouts/Layout.astro";
+import { executeQuery } from "@lib/datocms";
+
+import PageAdapter from "@components/cms-adapters/datocms/PageAdapter.astro";
+import {
+  SearchPageContentQuery,
+  type SearchPageContentFragmentType,
+} from "@graphql/query/search";
+import { linkResolver } from "@utils/linkResolver";
+import { removeLang } from "@utils/pathHelper";
+
+export async function getStaticPaths() {
+  type PathItem = {
+    params: {
+      search: string;
+      lang: SiteLocale;
+    };
+    props: {
+      content: SearchPageContentFragmentType[];
+      id: string;
+    };
+  };
+
+  const response = await executeQuery(SearchPageContentQuery);
+
+  const page = response.search;
+
+  const pathsPromises =
+    page?.locales.map(async (lang) => {
+      const fullPath = linkResolver(page.id, lang);
+
+      const slug = removeLang(fullPath, lang);
+
+      return {
+        params: {
+          search: slug,
+          lang: lang,
+        },
+        props: {
+          id: page.id,
+          content: page.allContentLocales?.find(
+            (contentLocale) => contentLocale.locale === lang,
+          )?.value,
+        },
+      };
+    }) || [];
+
+  const paths = await Promise.all(pathsPromises);
+
+  return paths.filter((path): path is PathItem => !!path.params.lang);
+}
+
+const { id, content } = Astro.props;
+
+Astro.locals.recordId = id;
+---
+
+<Layout noIndex={true}>
+  <PageAdapter content={content} />
+</Layout>

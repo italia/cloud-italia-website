@@ -1,0 +1,371 @@
+import type {
+  CalloutFragmentType,
+  ExternalLinkFragmentType,
+  ImageBlockFragmentType,
+  ListBlockquoteFragmentType,
+  ListCardEditorialWithIconFragmentType,
+  ListCardInfoFragmentType,
+  OrderedListFragmentType,
+  QuickLinkCardFragmentType,
+  TopicsBlockFragmentType,
+} from "@graphql/commonFragments";
+import type {
+  ActionCardFragmentType,
+  DataSectionRecordFragmentType,
+  FaqSectionRecordFragmentType,
+  HeroFragmentType,
+  IntroArticleFragmentType,
+  SpeakerFragmentType,
+  StructuredTextFragmentType,
+  SupportChannelsSectionFragmentType,
+  SupportCTASectionFragmentType,
+  TextAndAccordionFragmentType,
+  TextAndImageFragmentType,
+  WebinarDescriptionFragmentType,
+} from "@graphql/sectionFragments";
+import type {
+  ArticleContentFragmentType,
+  InsightContentFragmentType,
+  PageContentFragmentType,
+  StoryContentFragmentType,
+  WebinarContentFragmentType,
+} from "@graphql/templateFragments";
+import { render } from "datocms-structured-text-to-plain-text";
+
+type BlockType =
+  | InsightContentFragmentType
+  | StoryContentFragmentType
+  | WebinarContentFragmentType
+  | PageContentFragmentType;
+
+type AllStructuredTextBlocks =
+  | ArticleContentFragmentType["blocks"][number]
+  | StructuredTextFragmentType["blocks"][number];
+
+export const flattenBlocks = (blocks: BlockType[] | undefined | null) => {
+  if (!blocks) return "";
+  const stOptions = getSearchRenderOptions();
+  return blocks
+    .map((block) => {
+      switch (block.componentName) {
+        case "HeroRecord":
+          return flattenHeroSection(block);
+        case "FaqSectionRecord":
+          return flattenFaqSection(block);
+        case "IntroArticleRecord":
+          return flattenIntroArticle(block);
+        case "ActionCardRecord":
+          return flattenActionCard(block);
+        case "SpeakerRecord":
+          return flattenSpeaker(block);
+        case "WebinarDescriptionRecord":
+          return flattenWebinarDescription(block);
+        case "SupportCtaSectionRecord":
+          return flattenSupportCtaSection(block);
+        case "StructuredTextRecord":
+          return render(block.textContent, stOptions);
+        case "DataSectionRecord":
+          return flattenDataSection(block);
+        case "SupportChannelsSectionRecord":
+          return flattenSupportChannelsSection(block);
+        case "TextAccordionRecord":
+          return flattenTextAccordionSection(block);
+        case "TextImageRecord":
+          return flattenTextImageSection(block);
+        default:
+          return "";
+      }
+    })
+    .join(" ");
+};
+
+export const getSearchRenderOptions = () => ({
+  renderBlock({ record }: { record: AllStructuredTextBlocks }) {
+    switch (record.__typename) {
+      case "ImageBlockRecord":
+        return flattenImageBlock(record);
+      case "CalloutRecord":
+        return flattenCallout(record);
+      case "ListCardEditorialWithIconRecord":
+        return flattenListCardEditorialWithIcon(record);
+      case "ListCardInfoRecord":
+        return flattenListCardInfo(record);
+      case "OrderedListRecord":
+        return flattenOrderedList(record);
+      case "QuickLinkCardRecord":
+        return flattenQuickLinkCard(record);
+      case "TopicsBlockRecord":
+        return flattenTopicsBlock(record);
+      case "ExternalLinkRecord":
+        return flattenExternalLink(record);
+      case "SupportCtaSectionRecord":
+        return flattenSupportCtaSection(record);
+      case "ListBlockquoteRecord":
+        return flattenListBlockquote(record);
+      default:
+        console.warn(`Not implemented yet: ${record.__typename}`);
+        return "";
+    }
+  },
+});
+
+const cleanJoin = (parts: (string | null | undefined)[]): string => {
+  return parts
+    .map((p) => p?.replace(/<[^>]*>/g, ""))
+    .filter(Boolean)
+    .join(" ")
+    .replace(/\s+/g, " ")
+    .trim();
+};
+const flattenTextImageSection = (record: TextAndImageFragmentType): string => {
+  const parts: string[] = [];
+
+  if (record.text) {
+    parts.push(record.text.title);
+    parts.push(record.text.paragraph);
+  }
+
+  if (record.image) {
+    if (record.image.title) parts.push(record.image.title);
+    if (record.image.alt) parts.push(record.image.alt);
+  }
+
+  if (record.additionalContent) {
+    record.additionalContent.content.forEach((item) => {
+      parts.push(item.title, item.description);
+    });
+  }
+
+  return cleanJoin(parts);
+};
+
+const flattenTextAccordionSection = (
+  record: TextAndAccordionFragmentType,
+): string => {
+  const parts: string[] = [];
+
+  if (record.text) {
+    parts.push(record.text.title, record.text.paragraph);
+  }
+
+  if (record.accordion.title) parts.push(record.accordion.title);
+
+  record.accordion.accordion.items.forEach((item) => {
+    parts.push(item.header, item.body);
+  });
+
+  return cleanJoin(parts);
+};
+
+const flattenSupportChannelsSection = (
+  record: SupportChannelsSectionFragmentType,
+): string => {
+  const parts: string[] = [];
+
+  parts.push(record.title, record.paragraph);
+  record.channels.forEach((channel) => {
+    parts.push(channel.title, channel.description);
+  });
+
+  return cleanJoin(parts);
+};
+
+const flattenDataSection = (record: DataSectionRecordFragmentType): string => {
+  const parts: string[] = [];
+
+  if (record.highlights) {
+    const h = record.highlights;
+    parts.push(h.title);
+    parts.push(h.paragraph);
+    h.cards?.forEach((card) => {
+      parts.push(card.title, card.description);
+    });
+  }
+
+  if (record.panel) {
+    const p = record.panel;
+    parts.push(p.title, p.paragraph, p.externalLink.label);
+  }
+
+  if (record.result) {
+    const r = record.result;
+    if (r.title) parts.push(r.title);
+    if (r.paragraph) parts.push(r.paragraph);
+    if (r.titleListUseCases) parts.push(r.titleListUseCases);
+    r.items?.forEach((item) => {
+      parts.push(item.title, item.paragraph);
+    });
+  }
+
+  return cleanJoin(parts);
+};
+
+const flattenWebinarDescription = (
+  record: WebinarDescriptionFragmentType,
+): string => {
+  const parts: string[] = [];
+
+  parts.push(record.text.title, record.text.paragraph);
+  record.subjects.items.forEach((item) =>
+    parts.push(item.title, item.paragraph),
+  );
+
+  record.resourses?.links.forEach((item) => {
+    parts.push(item.label);
+    if (item.description) parts.push(item.description);
+  });
+
+  return cleanJoin(parts);
+};
+
+const flattenSpeaker = (record: SpeakerFragmentType): string => {
+  const parts: string[] = [];
+
+  parts.push(record.text.title, record.text.paragraph);
+  record.list?.authors.forEach((item) => {
+    parts.push(item.name);
+    if (item.role) parts.push(item.role);
+  });
+
+  return cleanJoin(parts);
+};
+
+const flattenIntroArticle = (record: IntroArticleFragmentType): string => {
+  const parts: string[] = [];
+
+  parts.push(record.text.title, record.text.paragraph);
+  record.list?.items?.items.forEach((item) => parts.push(item.label));
+
+  return cleanJoin(parts);
+};
+
+const flattenFaqSection = (record: FaqSectionRecordFragmentType): string => {
+  const parts: string[] = [];
+
+  parts.push(record.title);
+  record.accordion.items.forEach((question) =>
+    parts.push(question.header, question.body),
+  );
+
+  return cleanJoin(parts);
+};
+
+const flattenHeroSection = (record: HeroFragmentType): string => {
+  const parts: string[] = [];
+
+  parts.push(record.title);
+  if (record.paragraph) parts.push(record.paragraph);
+
+  return cleanJoin(parts);
+};
+
+const flattenActionCard = (record: ActionCardFragmentType): string => {
+  const parts: string[] = [];
+
+  parts.push(record.title, record.paragraph, record.cta.label);
+  if (record.cta.description) parts.push(record.cta.description);
+
+  return cleanJoin(parts);
+};
+
+const flattenSupportCtaSection = (
+  record: SupportCTASectionFragmentType,
+): string => {
+  const parts: string[] = [];
+
+  parts.push(record.title, record.paragraph);
+
+  return cleanJoin(parts);
+};
+
+const flattenImageBlock = (record: ImageBlockFragmentType): string => {
+  const parts: string[] = [];
+
+  if (record.image.alt) parts.push(record.image.alt);
+
+  return cleanJoin(parts);
+};
+
+const flattenCallout = (record: CalloutFragmentType): string => {
+  const parts: string[] = [];
+
+  parts.push(record.title, record.paragraph);
+
+  return cleanJoin(parts);
+};
+
+const flattenListCardEditorialWithIcon = (
+  record: ListCardEditorialWithIconFragmentType,
+): string => {
+  const parts: string[] = [];
+
+  record.items?.forEach((item) => parts.push(item.title, item.description));
+
+  return cleanJoin(parts);
+};
+
+const flattenQuickLinkCard = (record: QuickLinkCardFragmentType): string => {
+  const parts: string[] = [];
+  parts.push(record.title);
+
+  record.links?.forEach((item) => {
+    parts.push(item.label);
+    if (item.description) parts.push(item.description);
+  });
+
+  return cleanJoin(parts);
+};
+
+const flattenTopicsBlock = (record: TopicsBlockFragmentType): string => {
+  const parts: string[] = [];
+
+  if (record.title) parts.push(record.title);
+
+  record.topics?.forEach((topic: any) => {
+    if (topic.label) parts.push(topic.label);
+  });
+
+  return cleanJoin(parts);
+};
+
+const flattenExternalLink = (record: ExternalLinkFragmentType): string => {
+  const parts: string[] = [];
+
+  if (record.label) parts.push(record.label);
+  if (record.description) parts.push(record.description);
+
+  return cleanJoin(parts);
+};
+
+const flattenListBlockquote = (record: ListBlockquoteFragmentType): string => {
+  const parts: string[] = [];
+
+  record.items?.forEach((item: any) => {
+    if (item.paragraph) parts.push(item.paragraph);
+    if (item.author) parts.push(item.author);
+  });
+
+  return cleanJoin(parts);
+};
+
+const flattenListCardInfo = (record: ListCardInfoFragmentType): string => {
+  const parts: string[] = [];
+
+  record.items?.forEach((item: any) => {
+    if (item.title) parts.push(item.title);
+    if (item.paragraph) parts.push(item.paragraph);
+  });
+
+  return cleanJoin(parts);
+};
+
+const flattenOrderedList = (record: OrderedListFragmentType): string => {
+  const parts: string[] = [];
+
+  record.items?.forEach((item: any) => {
+    if (item.title) parts.push(item.title);
+    if (item.paragraph) parts.push(item.paragraph);
+  });
+
+  return cleanJoin(parts);
+};

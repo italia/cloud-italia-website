@@ -1,27 +1,18 @@
+import {
+  LocaleFragment,
+  NewsItemFragment,
+  ResourceFragment,
+  SidebarFragment,
+  StoryItemFragment,
+  TagFragment,
+  WebinarItemFragment,
+} from "@graphql/commonFragments";
 import { graphql } from "@graphql/graphql";
 import {
-  TagFragment,
-  LocaleFragment,
-  SidebarFragment,
-  NewsItemFragment,
-  StoryItemFragment,
-  WebinarItemFragment,
-  ResourceFragment,
-} from "@graphql/commonFragments";
-import {
-  AllArticlesFragment,
-  AllInsightsFragment,
-  AllStoryItemsFragment,
-  AllWebinarItemsFragment,
-  HomepageModelContentFragment,
-  CatalogueContentFragment,
-  PageContentFragment,
-  ArticleContentFragment,
-  WebinarContentFragment,
-  InsightContentFragment,
-  StoryContentFragment,
-} from "@graphql/templateFragments";
-import { FooterFragment, HeaderFragment } from "@graphql/sectionFragments";
+  FooterFragment,
+  HeaderFragment,
+  SearchMenuFragment,
+} from "@graphql/sectionFragments";
 import {
   AllArticlesSlugFragment,
   AllCataloguesSlugFragment,
@@ -30,7 +21,21 @@ import {
   AllStoryItemsSlugFragment,
   AllWebinarItemsSlugFragment,
   HomepageFragment,
+  SearchFragment,
 } from "@graphql/slugFragments";
+import {
+  AllArticlesFragment,
+  AllInsightsFragment,
+  AllStoryItemsFragment,
+  AllWebinarItemsFragment,
+  ArticleContentFragment,
+  CatalogueContentFragment,
+  HomepageModelContentFragment,
+  InsightContentFragment,
+  PageContentFragment,
+  StoryContentFragment,
+  WebinarContentFragment,
+} from "@graphql/templateFragments";
 
 export const LocalesQuery = graphql(`
   query Locales {
@@ -71,9 +76,12 @@ export const LayoutQuery = graphql(
       homepage(locale: $locale) {
         id
       }
+      search(locale: $locale) {
+        ...SearchMenuFragment
+      }
     }
   `,
-  [FooterFragment, HeaderFragment],
+  [FooterFragment, HeaderFragment, SearchMenuFragment],
 );
 
 export const HomepageQuery = graphql(
@@ -175,6 +183,9 @@ export const AllLinkQuery = graphql(
       homepage {
         ...HomepageFragment
       }
+      search {
+        ...SearchFragment
+      }
     }
   `,
   [
@@ -185,7 +196,7 @@ export const AllLinkQuery = graphql(
     AllWebinarItemsSlugFragment,
     AllCataloguesSlugFragment,
     HomepageFragment,
-    LocaleFragment,
+    SearchFragment,
   ],
 );
 
