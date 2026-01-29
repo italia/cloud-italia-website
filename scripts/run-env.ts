@@ -1,6 +1,5 @@
-import { spawnSync } from "node:child_process";
-import { existsSync } from "node:fs";
 import dotenv from "dotenv";
+import { spawnSync } from "node:child_process";
 
 const mode = process.argv[2];
 const command = process.argv[3];
@@ -11,10 +10,10 @@ if (!mode || !command) {
 }
 
 const envFile = `.env.${mode}`;
-if (!existsSync(envFile)) {
+/* if (!existsSync(envFile)) {
   console.error(`Missing env file: ${envFile}`);
   process.exit(1);
-}
+} */
 
 dotenv.config({ path: envFile, override: true });
 
