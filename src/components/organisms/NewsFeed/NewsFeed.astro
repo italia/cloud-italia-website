@@ -6,6 +6,7 @@ import { CardEditorialNews } from "@components/molecules/CardEditorialNews";
 import type { CardEditorialNewsProps } from "@components/molecules/CardEditorialNews/types";
 import { TabContent, Tabs } from "@components/molecules/Tabs";
 import TextContainer from "@components/molecules/TextContainer/TextContainer.astro";
+import { Carousel, CarouselItem } from "@components/molecules/Carousel";
 
 type NewsTab = {
   title: string;
@@ -37,6 +38,8 @@ const tabsItems = tabs.map((tab, index) => ({
   label: tab.title,
   active: index === 0,
 }));
+
+const hasMultipleTabs = tabsItems.length > 1;
 ---
 
 <SplitContent leftColumns={5} background="primary" alignItems="top">
@@ -46,29 +49,72 @@ const tabsItems = tabs.map((tab, index) => ({
     paragraph={paragraph}
     variant="primary"
   />
-  <div class="row pt-5">
+  <div class="row pt-lg-5">
     <Tabs id={id} variant="dark" items={tabsItems}>
       {
         tabs.map((tab, index) => (
           <TabContent tab={tabsItems[index]}>
-            <ul class="it-card-list row pt-5" aria-label={tab.title}>
+            <Carousel>
               {tab.componentName === "CardEditorialNews" &&
                 tab.news.map((n) => (
-                  <li class="col-12 col-lg-4 mb-3">
+                  <CarouselItem>
                     <CardEditorialNews {...n} />
-                  </li>
+                  </CarouselItem>
                 ))}
 
               {tab.componentName === "CardEditorialInlineMini" &&
                 tab.news.map((n) => (
-                  <li class="col-12 col-lg-6 mb-3">
+                  <CarouselItem>
                     <CardEditorialInlineMini {...n} />
-                  </li>
+                  </CarouselItem>
                 ))}
-            </ul>
+            </Carousel>
+
+            <div class="d-none d-lg-block">
+              <ul
+                class={`it-card-list row ${hasMultipleTabs ? "pt-5" : ""}`}
+                aria-label={tab.title}
+              >
+                {tab.componentName === "CardEditorialNews" &&
+                  tab.news.map((n) => (
+                    <li class="col-12 col-lg-4 mb-3">
+                      <CardEditorialNews {...n} />
+                    </li>
+                  ))}
+
+                {tab.componentName === "CardEditorialInlineMini" &&
+                  tab.news.map((n) => (
+                    <li class="col-12 col-lg-4 mb-3">
+                      <CardEditorialInlineMini {...n} />
+                    </li>
+                  ))}
+              </ul>
+            </div>
           </TabContent>
         ))
       }
     </Tabs>
   </div>
 </SplitContent>
+
+<script>
+  const refreshTabCarousels = () => {
+    const carousels = document.querySelectorAll(".splide");
+    carousels.forEach((carousel) => {
+      // @ts-ignore - Se l'istanza è presente, facciamo refresh
+      if (carousel.splide) {
+        // @ts-ignore - Se l'istanza è presente, facciamo refresh
+        carousel.splide.refresh();
+      } else {
+        window.dispatchEvent(new Event("resize"));
+      }
+    });
+  };
+
+  document.addEventListener("shown.bs.tab", refreshTabCarousels);
+</script>
+<style is:global>
+  .splide__pagination__page.is-active {
+    background-color: white !important;
+  }
+</style>

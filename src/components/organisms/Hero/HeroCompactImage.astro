@@ -29,18 +29,14 @@ const backgroundColorClassNames: Record<SectionBackground, string> = {
   <div class="container">
     <div class="row align-items-center">
       <div class="col-12 col-lg-8">
-        <div class="it-hero-text-wrapper">
+        <div class="it-hero-text-wrapper px-0">
           {showBreadcrumb && <slot name="breadcrumb" />}
           <h1>{title}</h1>
-          {
-            paragraph && (
-              <p class="d-none d-lg-block font-sans-serif">{paragraph}</p>
-            )
-          }
+          {paragraph && <p class="font-sans-serif">{paragraph}</p>}
         </div>
       </div>
 
-      <div class="col-12 col-lg-4">
+      <div class="col-12 col-lg-4 px-0">
         {
           image && (
             <div class="img-container">

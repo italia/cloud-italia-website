@@ -1,10 +1,11 @@
 ---
-import type { UseCaseCardProps } from "./types";
 import { Image } from "@components/atoms/Image";
 import { Topics } from "@components/molecules/Topics";
+import type { UseCaseCardProps } from "./types";
 
 type Props = UseCaseCardProps;
 const {
+  id = "",
   title,
   paragraph,
   linkTo,
@@ -20,12 +21,12 @@ const {
   @import "./style.scss";
 </style>
 <article
-  class=`it-card it-card-profile ${variant==="big" && "it-card-big"} rounded shadow-sm border lightgrey-bg-a3`
+  class=`it-card it-card-profile ${variant==="big" && "it-card-big"} p-4 rounded shadow-sm border lightgrey-bg-a3 d-none d-lg-block`
 >
-  <div class="it-card-profile-header">
+  <div class="it-card-profile-header align-items-end p-0 m-0">
     {
       image && (
-        <div class="it-card-profile-image ratio ratio-1x1">
+        <div class="it-card-profile-image rounded-2 overflow-hidden ratio ratio-1x1">
           <figure class="figure img-full">
             <Image {...image} />
           </figure>
@@ -33,12 +34,12 @@ const {
       )
     }
 
-    <div class="it-card-profile it-card-body">
+    <div class="it-card-profile it-card-body m-0">
       <div>
-        <h4 class="it-card-profile-name">
+        <h3 class="it-card-profile-name">
           <a href={linkTo}>{title}</a>
-        </h4>
-        <p class="it-card-text">
+        </h3>
+        <p>
           {paragraph}
         </p>
       </div>
@@ -61,10 +62,67 @@ const {
                 {descriptionTitle}
               </h4>
             )}
-            <div class="it-card-text" set:html={description} />
+            <div set:html={description} />
           </div>
         </div>
       )
     }
+  </div>
+</article>
+
+<article
+  class="it-card rounded shadow-sm border lightgrey-bg-a3 d-block d-lg-none"
+>
+  {
+    image && (
+      <div class="it-card-title it-card-title-icon ">
+        <div class="it-card-title-icon-wrapper col-2 rounded-2 overflow-hidden ratio ratio-1x1">
+          <figure class="figure img-full">
+            <Image {...image} />
+          </figure>
+        </div>
+      </div>
+    )
+  }
+
+  <div class="it-card-body">
+    <div>
+      <h4 class="it-card-profile-name">
+        <a href={linkTo}>{title}</a>
+      </h4>
+      <p class="it-card-text">
+        {paragraph}
+      </p>
+
+      {
+        (descriptionTitle || description) && (
+          <div class="accordion border-0" id={id}>
+            <div class="accordion-item rounded-2 px-4">
+              <h2 class="accordion-header" id={`heading-${id}`}>
+                <button
+                  class="accordion-button border-0 border-bottom"
+                  type="button"
+                  data-bs-toggle="collapse"
+                  data-bs-target={`#collapse-${id}`}
+                  aria-expanded="true"
+                  aria-controls={`collapse-${id}`}
+                >
+                  {descriptionTitle}
+                </button>
+              </h2>
+              <div
+                id={`collapse-${id}`}
+                class="accordion-collapse collapse show"
+                data-bs-parent={`#${id}`}
+                role="region"
+                aria-labelledby={`heading-${id}`}
+              >
+                <div class="py-3" set:html={description} />
+              </div>
+            </div>
+          </div>
+        )
+      }
+    </div>
   </div>
 </article>

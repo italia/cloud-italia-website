@@ -1,9 +1,9 @@
 ---
-import { TextContainer } from "@components/molecules/TextContainer";
 import { SectionContainer } from "@components/organisms/SectionContainer";
 import type { TopicFilterProps } from "./types";
 import { CardEditorialNews } from "@components/molecules/CardEditorialNews";
 import { Topics } from "@components/molecules/Topics";
+import { Carousel, CarouselItem } from "@components/molecules/Carousel";
 
 type Props = TopicFilterProps;
 
@@ -21,7 +21,12 @@ const slugify = (text: string) =>
 <SectionContainer className="lightgrey-bg-a3">
   <div class=`row justify-content-between align-items-top`>
     <div class=`col-lg-5 col-12`>
-      <TextContainer title={title} paragraph={paragraph} />
+      <div class=`text-container mb-4 mb-lg-0`>
+        <h2 class="mb-3">
+          {title}
+        </h2>
+        <p>{paragraph}</p>
+      </div>
     </div>
     <div
       class=`col-lg-5 col-12`
@@ -45,21 +50,33 @@ const slugify = (text: string) =>
     {
       contentCollection.map((collection) => (
         <div
-          class="row justify-content-between align-items-top py-5 filter-section"
+          class="row pt-5 filter-section"
           data-topic={slugify(collection.topicSlug)}
         >
           <div class="col-lg-6 col-12">
-            <TextContainer
-              title={collection.title}
-              paragraph={collection.paragraph || ""}
-            />
+            <div class="text-container mb-4 mb-lg-0">
+              <h3 class="mb-3">{collection.title}</h3>
+              <p>{collection.paragraph || ""}</p>
+            </div>
           </div>
 
-          <div class="it-card-group it-card-group-3-cols">
-            {collection.items.map((item) => (
-              <CardEditorialNews {...item} fullHeight={false} />
-            ))}
+          <div class="content-desktop d-none d-lg-block">
+            <ul class="it-card-list row" aria-label={collection.title}>
+              {collection.items.map((item) => (
+                <li class="col-12 col-lg-4 mb-3">
+                  <CardEditorialNews {...item} />
+                </li>
+              ))}
+            </ul>
           </div>
+
+          <Carousel>
+            {collection.items.map((item) => (
+              <CarouselItem>
+                <CardEditorialNews {...item} />
+              </CarouselItem>
+            ))}
+          </Carousel>
         </div>
       ))
     }

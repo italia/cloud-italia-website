@@ -15,16 +15,27 @@ body {
   background-color: hsla(0, 0%, 100%, 0.25);
 }
 
-.py-80 {
-  padding-top: 80px !important;
-  padding-bottom: 80px !important;
+@media (min-width: 992px) {
+  .py-lg-80 {
+    padding-top: 80px !important;
+    padding-bottom: 80px !important;
+  }
 }
 
-.it-hero-wrapper .it-hero-text-wrapper p {
-  font-family: "Titillium Web", Geneva, Tahoma, sans-serif !important;
+.it-hero-wrapper {
+  align-items: center !important;
+
+  .it-hero-text-wrapper p {
+    font-family: "Titillium Web", Geneva, Tahoma, sans-serif !important;
+  }
 }
 
-.structured-text-container .container > * + :is(h1, h2, h3, h4, h5, h6) {
+.structured-text-container .container > p,
+.structured-text-container .container > ul > li > p {
+  font-family: "Lora, serif" !important;
+}
+
+.structured-text-container .container > * + :is(h2, h3, h4, h5, h6) {
   margin-top: 3rem !important;
   margin-bottom: 1rem !important;
 }
@@ -45,3 +56,7 @@ body {
   mask-size: contain;
   mask-position: center;
 }
+
+/* ul>li {
+  list-style-type: square;
+} */
