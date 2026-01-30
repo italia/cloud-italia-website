@@ -246,6 +246,7 @@ export const ChannelFragment = graphql(`
       url
     }
     description
+    linkTo
   }
 `);
 
@@ -402,9 +403,7 @@ export const ExternalLinkFragment = graphql(`
   fragment ExternalLinkFragment on ExternalLinkRecord @_unmask {
     id
     url
-    titleIcon
     label
-    icon
     description
   }
 `);
@@ -546,7 +545,6 @@ export const ListInternalLinkFragment = graphql(`
     id
     links {
       label
-      icon
       linkTo {
         id
       }

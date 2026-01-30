@@ -1,30 +1,34 @@
 ---
 import type { CardInfoAndServiceProps } from "./types";
+import { Icon } from "@components/atoms/Icon";
+import ItExternalLink from "static/assets/itExternalLink.astro";
+
 type Props = CardInfoAndServiceProps;
+
 const { title, description, icon, titleIcon, linkTo } = Astro.props;
+
+const isExternal = linkTo?.startsWith("http");
 const TitleTag = linkTo ? "a" : "span";
 ---
 
 <article class="it-card rounded shadow-sm border">
-  <h3 class="it-card-title it-card-title-icon">
-    <TitleTag
-      href={linkTo}
-      target={linkTo ? "_blank" : undefined}
-      rel={linkTo ? "noopener noreferrer" : undefined}
-      >{title}
-      {
-        icon && (
-          <div class="it-card-title-icon-wrapper">
-            <svg class="icon icon-primary" role="img">
-              {titleIcon && <title>{titleIcon}</title>}
-              <use href={`/bsi-svg/sprites.svg#${icon}`} />
-            </svg>
-          </div>
-        )
-      }
-    </TitleTag>
-  </h3>
   <div class="it-card-body">
+    <h3 class="it-card-title it-card-title-icon">
+      <TitleTag
+        href={linkTo}
+        target={TitleTag === "a" && isExternal ? "_blank" : undefined}
+        rel={TitleTag === "a" && isExternal ? "noopener noreferrer" : undefined}
+      >
+        {title}
+        {
+          icon ? (
+            <Icon icon={icon} className="text-primary icon-xl" />
+          ) : (
+            <ItExternalLink color="primary" size="xl" />
+          )
+        }
+      </TitleTag>
+    </h3>
     <p class="it-card-text">
       {description}
     </p>
