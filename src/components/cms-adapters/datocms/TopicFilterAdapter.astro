@@ -1,8 +1,8 @@
 ---
 import { TopicFilter } from "@components/organisms/TopicFilter";
 import type { ContentCollectionProps } from "@components/organisms/TopicFilter/types";
-import { linkResolver } from "@utils/linkResolver";
 import type { TopicFilterFragmentType } from "@graphql/sectionFragments";
+import { linkResolver } from "@utils/linkResolver";
 
 type Props = {
   block: TopicFilterFragmentType;
@@ -15,7 +15,7 @@ const contentCollection: ContentCollectionProps[] = block.content.map(
   (content) => {
     return {
       title: content.title,
-      topicSlug: content.content[0].topic.label,
+      topicSlug: content.content[0] ? content.content[0].topic.label : "",
       paragraph: content.paragraph || undefined,
       items: content.content.map((item) => {
         return {
