@@ -1,4 +1,7 @@
 ---
+import type { GenericListItemProps } from "@components/molecules/GenericList/types";
+import { createDownloadUrl } from "@utils/createDownloadUrl";
+import { linkResolver } from "@utils/linkResolver";
 import type { QuickLinkCardFragmentType } from "../../../graphql/commonFragments";
 import { QuickLinkCard } from "../../molecules/QuickLinkCard";
 
@@ -12,13 +15,41 @@ type Props = {
 };
 
 const { block } = Astro.props;
+const { lang } = Astro.locals;
 
-const links = block.links.map((link) => ({
-  linkTo: link.url,
-  text: link.label,
-  iconRight: link.icon || undefined,
-  titleIcon: link.titleIcon || undefined,
-}));
+const links: GenericListItemProps[] = block.links.map((link) => {
+  if (link.componentName === "ResourceRecord") {
+    const res = link.resource;
+
+    if (res.componentName === "DownloadLinkRecord") {
+      return {
+        linkTo: createDownloadUrl(res.doc),
+        text: res.label,
+        iconRight: "it-download",
+      };
+    }
+
+    return {
+      linkTo: res.url,
+      text: res.label,
+      iconRight: "it-external-link",
+      openInNewTab: true,
+    };
+  }
+
+  if (link.componentName === "ArticleRecord") {
+    return {
+      linkTo: linkResolver(link.id, lang),
+      text: link.title,
+      iconRight: "it-arrow-right",
+    };
+  }
+
+  return {
+    linkTo: "#",
+    text: "Link non valido",
+  };
+});
 ---
 
 <QuickLinkCard title={block.title} links={links} />
