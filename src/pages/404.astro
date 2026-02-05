@@ -4,8 +4,16 @@
     <meta charset="utf-8" />
     <title>Redirecting...</title>
     <script is:inline>
-      const userLang = navigator.language || navigator.userLanguage;
-      const lang = userLang.startsWith("it") ? "it" : "en";
+      const path = window.location.pathname;
+      let lang = "en";
+      if (path.startsWith("/it/")) {
+        lang = "it";
+      } else if (path.startsWith("/en/")) {
+        lang = "en";
+      } else {
+        const userLang = navigator.language || navigator.userLanguage;
+        lang = userLang.startsWith("it") ? "it" : "en";
+      }
       window.location.href = `/${lang}/404/`;
     </script>
   </head>
