@@ -36,11 +36,27 @@ export const InternalLinkFragment = graphql(`
   fragment InternalLinkFragment on InternalLinkRecord @_unmask {
     label
     linkTo {
-      id
+      ... on CatalogueRecord {
+        id
+      }
+      ... on PageRecord {
+        id
+      }
     }
   }
 `);
 export type InternalLinkFragmentType = FragmentOf<typeof InternalLinkFragment>;
+
+export const ExternalLinkFragment = graphql(`
+  fragment ExternalLinkFragment on ExternalLinkRecord @_unmask {
+    id
+    url
+    label
+    description
+  }
+`);
+
+export type ExternalLinkFragmentType = FragmentOf<typeof ExternalLinkFragment>;
 
 export const BrandFragment = graphql(`
   fragment BrandFragment on BrandRecord @_unmask {
@@ -195,9 +211,6 @@ export const NewsTabFragment = graphql(
       }
       id
       title
-      cta {
-        ...InternalLinkFragment
-      }
       news {
         ...NewsItemFragment
       }
@@ -236,9 +249,6 @@ export const StoryTabFragment = graphql(
       }
       id
       title
-      cta {
-        ...InternalLinkFragment
-      }
       news {
         ...StoryItemFragment
       }
@@ -268,11 +278,20 @@ export const TextBlockFragment = graphql(
       title
       paragraph(markdown: true)
       cta {
-        ...InternalLinkFragment
+        ... on RecordInterface {
+          id
+          componentName: __typename
+        }
+        ... on InternalLinkRecord {
+          ...InternalLinkFragment
+        }
+        ... on ExternalLinkRecord {
+          ...ExternalLinkFragment
+        }
       }
     }
   `,
-  [InternalLinkFragment],
+  [InternalLinkFragment, ExternalLinkFragment],
 );
 
 export type TextBlockFragmentType = FragmentOf<typeof TextBlockFragment>;
@@ -341,7 +360,7 @@ export const AccordionFragment = graphql(`
     id
     items {
       id
-      body
+      body(markdown: true)
       header
     }
     variant
@@ -405,17 +424,6 @@ export const ListItemFragment = graphql(`
 `);
 
 export type ListItemFragmentType = FragmentOf<typeof ListItemFragment>;
-
-export const ExternalLinkFragment = graphql(`
-  fragment ExternalLinkFragment on ExternalLinkRecord @_unmask {
-    id
-    url
-    label
-    description
-  }
-`);
-
-export type ExternalLinkFragmentType = FragmentOf<typeof ExternalLinkFragment>;
 
 export const DownloadLinkFragment = graphql(`
   fragment DownloadLinkFragment on DownloadLinkRecord @_unmask {
@@ -521,7 +529,7 @@ export const CalloutFragment = graphql(`
   fragment CalloutFragment on CalloutRecord @_unmask {
     id
     title
-    paragraph
+    paragraph(markdown: true)
     visuallyHidden
   }
 `);
@@ -534,7 +542,12 @@ export const ListInternalLinkFragment = graphql(`
     links {
       label
       linkTo {
-        id
+        ... on CatalogueRecord {
+          id
+        }
+        ... on PageRecord {
+          id
+        }
       }
     }
   }
