@@ -6,7 +6,6 @@ import type {
   ListCardEditorialWithIconFragmentType,
   ListCardInfoFragmentType,
   OrderedListFragmentType,
-  QuickLinkCardFragmentType,
   TopicsBlockFragmentType,
 } from "@graphql/commonFragments";
 import type {
@@ -92,8 +91,6 @@ export const getSearchRenderOptions = () => ({
         return flattenListCardInfo(record);
       case "OrderedListRecord":
         return flattenOrderedList(record);
-      case "QuickLinkCardRecord":
-        return flattenQuickLinkCard(record);
       case "TopicsBlockRecord":
         return flattenTopicsBlock(record);
       case "ExternalLinkRecord":
@@ -210,11 +207,6 @@ const flattenWebinarDescription = (
     parts.push(item.title, item.paragraph),
   );
 
-  record.resourses?.links.forEach((item) => {
-    parts.push(item.label);
-    if (item.description) parts.push(item.description);
-  });
-
   return cleanJoin(parts);
 };
 
@@ -300,18 +292,6 @@ const flattenListCardEditorialWithIcon = (
   const parts: string[] = [];
 
   record.items?.forEach((item) => parts.push(item.title, item.description));
-
-  return cleanJoin(parts);
-};
-
-const flattenQuickLinkCard = (record: QuickLinkCardFragmentType): string => {
-  const parts: string[] = [];
-  parts.push(record.title);
-
-  record.links?.forEach((item) => {
-    parts.push(item.label);
-    if (item.description) parts.push(item.description);
-  });
 
   return cleanJoin(parts);
 };
