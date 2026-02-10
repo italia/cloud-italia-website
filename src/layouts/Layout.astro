@@ -10,6 +10,7 @@ import type {
 } from "@graphql/sectionFragments";
 import { executeQuery } from "@lib/datocms";
 import { isDraftModeEnabled } from "@lib/draftMode";
+import { type JsonLdPageData } from "@utils/JsonLD/seoJsonLd";
 import {
   GlobalSettingsQuery,
   LayoutQuery,
@@ -17,12 +18,14 @@ import {
 } from "@utils/query";
 import bsi from "bootstrap-italia/dist/js/bootstrap-italia.bundle.min.js?url";
 import "../styles/global.scss";
+import JsonLDScripts from "./JsonLDScripts.astro";
 
 type Props = {
   pageSeo?: TitleMetaLinkTag[];
   redirectUrl?: string;
   noIndex?: boolean;
   datePublished?: string;
+  jsonLd?: JsonLdPageData;
 };
 
 const isPreview = isDraftModeEnabled(Astro.cookies);
@@ -31,6 +34,7 @@ const {
   redirectUrl,
   noIndex = false,
   datePublished,
+  jsonLd,
 } = Astro.props;
 
 const { lang } = Astro.locals;
@@ -83,6 +87,7 @@ const isShowingPreviewBar = isPreview && redirectUrl;
     />
     {noIndex && <meta name="robots" content="noindex, nofollow" />}
     <Seo data={[...result.site.faviconMetaTags, ...pageSeo]} />
+    <JsonLDScripts jsonLd={jsonLd} />
     <link
       href="https://fonts.googleapis.com/css2?family=Titillium+Web:wght@300;400;600;700&display=swap"
       rel="stylesheet"

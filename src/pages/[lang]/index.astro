@@ -16,6 +16,7 @@ export async function getStaticPaths() {
 }
 
 const { lang } = Astro.params;
+Astro.locals.lang = lang;
 
 const { homepage } = await executeQuery(HomepageQuery, {
   variables: { locale: lang },
@@ -27,6 +28,6 @@ const content = homepage.content;
 Astro.locals.recordId = homepage.id;
 ---
 
-<Layout pageSeo={homepage.seo} datePublished={homepage.publishedAt}>
+<Layout pageSeo={homepage.metaTags} datePublished={homepage.publishedAt}>
   <PageAdapter content={content} />
 </Layout>
