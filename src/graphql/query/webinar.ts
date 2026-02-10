@@ -1,7 +1,35 @@
-import { TagFragment } from "@graphql/commonFragments";
+import {
+  TagFragment,
+  WebinarItemFragment,
+} from "@graphql/fragment/commonFragments";
+import { SeoFieldFragment } from "@graphql/fragment/seoFragments";
+import {
+  AllWebinarItemsFragment,
+  WebinarContentFragment,
+} from "@graphql/fragment/webinar";
 import { graphql } from "@graphql/graphql";
-import { WebinarContentFragment } from "@graphql/templateFragments";
-import { SeoFieldFragment } from "@graphql/seoFragments";
+
+export const AllWebinarItemsQuery = graphql(
+  `
+    query allWebinarItems {
+      allWebinarItems {
+        ...AllWebinarItemsFragment
+      }
+    }
+  `,
+  [AllWebinarItemsFragment],
+);
+
+export const AllWebinarQuery = graphql(
+  `
+    query AllWebinar($locale: SiteLocale!) {
+      allWebinarItems(locale: $locale) {
+        ...WebinarItemFragment
+      }
+    }
+  `,
+  [WebinarItemFragment],
+);
 
 export const AllWebinarsContentQuery = graphql(
   `

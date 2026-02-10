@@ -1,11 +1,9 @@
+import { AllNewsQuery } from "@graphql/query/news";
+import { AllResourcesQuery } from "@graphql/query/resource";
+import { AllStoryCardQuery } from "@graphql/query/story";
+import { AllWebinarQuery } from "@graphql/query/webinar";
 import type { SiteLocale } from "@graphql/types";
 import { executeQuery } from "@lib/datocms";
-import {
-  AllNewsQuery,
-  AllResourcesQuery,
-  AllStoryQuery,
-  AllWebinarQuery,
-} from "@utils/query";
 import { getCollection } from "astro:content";
 
 const wrap = (items: any[]) => items.map((item) => ({ data: item }));
@@ -24,7 +22,7 @@ export const getNews = async (lang: SiteLocale, isPreview: boolean) => {
 
 export const getStories = async (lang: SiteLocale, isPreview: boolean) => {
   if (isPreview) {
-    const res = await executeQuery(AllStoryQuery, {
+    const res = await executeQuery(AllStoryCardQuery, {
       variables: { locale: lang },
       includeDrafts: true,
     });

@@ -1,7 +1,21 @@
-import { TagFragment } from "@graphql/commonFragments";
+import {
+  StoryCardFragment,
+  TagFragment,
+} from "@graphql/fragment/commonFragments";
+import { SeoFieldFragment } from "@graphql/fragment/seoFragments";
+import { StoryContentFragment } from "@graphql/fragment/story";
 import { graphql } from "@graphql/graphql";
-import { StoryContentFragment } from "@graphql/templateFragments";
-import { SeoFieldFragment } from "@graphql/seoFragments";
+
+export const AllStoryCardQuery = graphql(
+  `
+    query AllStory($locale: SiteLocale!) {
+      allStoryItems(locale: $locale) {
+        ...StoryCardFragment
+      }
+    }
+  `,
+  [StoryCardFragment],
+);
 
 export const AllStoriesContentQuery = graphql(
   `

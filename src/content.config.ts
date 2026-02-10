@@ -1,22 +1,21 @@
 import type {
   NewsItemFragmentType,
   ResourceFragmentType,
-  StoryItemFragmentType,
+  StoryCardFragmentType,
   WebinarItemFragmentType,
-} from "@graphql/commonFragments";
+} from "@graphql/fragment/commonFragments";
+import { AllNewsQuery } from "@graphql/query/news";
+import { AllResourcesQuery } from "@graphql/query/resource";
+import { LocalesQuery } from "@graphql/query/settings";
+import { AllStoryCardQuery } from "@graphql/query/story";
+import { AllWebinarQuery } from "@graphql/query/webinar";
 import { executeQuery } from "@lib/datocms";
-import {
-  AllNewsQuery,
-  AllResourcesQuery,
-  AllStoryQuery,
-  AllWebinarQuery,
-  LocalesQuery,
-} from "@utils/query";
+
 import { defineCollection, z } from "astro:content";
 
 const newsSchema = z.custom<NewsItemFragmentType>();
 
-const storySchema = z.custom<StoryItemFragmentType>();
+const storySchema = z.custom<StoryCardFragmentType>();
 
 const webinarSchema = z.custom<WebinarItemFragmentType>();
 
@@ -66,7 +65,7 @@ const storiesCollection = defineCollection({
 
     for (const locale of locales) {
       try {
-        const response = await executeQuery(AllStoryQuery, {
+        const response = await executeQuery(AllStoryCardQuery, {
           variables: { locale },
         });
 
