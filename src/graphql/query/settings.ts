@@ -38,6 +38,16 @@ export const GlobalSettingsQuery = graphql(`
     globalSetting(locale: $locale) {
       siteName
       lastUpdateLabel
+      ariaLabelLogo
+      languageSelector
+      chipTopicLabel
+      ariaLabelCardCategory
+      ariaLabelCardAction
+      ariaLabelExternalLink
+      ariaLabelInternalLink
+      ariaLabelDownloadLink
+      analyzer
+      loading
     }
   }
 `);
