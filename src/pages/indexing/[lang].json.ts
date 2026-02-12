@@ -1,6 +1,7 @@
 import { AllDocumentsQuery } from "@graphql/fragment/indexing";
 import { LocalesQuery } from "@graphql/query/settings";
 import type { SiteLocale } from "@graphql/types";
+import { getGlobalSettings } from "@lib/dataFetcher";
 import { executeQuery } from "@lib/datocms";
 import {
   getCataloguesMapCategory,
@@ -32,6 +33,9 @@ export const GET: APIRoute = async ({ params }) => {
     return new Response("Language parameter is missing", { status: 400 });
   }
 
+  const globalSetting = await getGlobalSettings(lang);
+  const analyzer = globalSetting?.analyzer || "standard";
+
   const response = await executeQuery(AllDocumentsQuery);
   const articles = response.allArticles;
   const insights = response.allInsights;
@@ -58,24 +62,29 @@ export const GET: APIRoute = async ({ params }) => {
     getTitleByTypeResourse(cataloguesMapCategory, resourses[0]?.modelApiKey) ||
     "";
 
+  const allDocuments = [
+    ...pages.map((item) => Mappers.getMapPages(item, lang)),
+    ...newsItems.map((item) => Mappers.getMapNews(item, lang, newsCategory)),
+    ...articles.flatMap((item) =>
+      Mappers.getMapArticle(item, lang, articleCategory),
+    ),
+    ...insights.map((item) =>
+      Mappers.getMapInsight(item, lang, insightCategory),
+    ),
+    ...stories.map((item) => Mappers.getMapStory(item, lang, storyCategory)),
+    ...webinars.map((item) =>
+      Mappers.getMapWebinar(item, lang, webinarCategory),
+    ),
+    ...resourses
+      .map((item) => Mappers.getMapResourse(item, lang, resourseCategory))
+      .filter(Boolean),
+  ];
+
   return new Response(
-    JSON.stringify([
-      ...pages.map((item) => Mappers.getMapPages(item, lang)),
-      ...newsItems.map((item) => Mappers.getMapNews(item, lang, newsCategory)),
-      ...articles.flatMap((item) =>
-        Mappers.getMapArticle(item, lang, articleCategory),
-      ),
-      ...insights.map((item) =>
-        Mappers.getMapInsight(item, lang, insightCategory),
-      ),
-      ...stories.map((item) => Mappers.getMapStory(item, lang, storyCategory)),
-      ...webinars.map((item) =>
-        Mappers.getMapWebinar(item, lang, webinarCategory),
-      ),
-      ...resourses
-        .map((item) => Mappers.getMapResourse(item, lang, resourseCategory))
-        .filter(Boolean),
-    ]),
+    JSON.stringify({
+      analyzer: analyzer,
+      documents: allDocuments,
+    }),
     {
       status: 200,
       headers: {
