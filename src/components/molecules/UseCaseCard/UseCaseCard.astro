@@ -17,7 +17,8 @@ const {
   backgroundColor = "light",
 } = Astro.props;
 
-const bgClass = backgroundColor === "light" ? "lightgrey-bg-a3" : "white-bg";
+const bgClass =
+  backgroundColor === "light" ? "it-section-bg-light" : "it-section-bg-default";
 ---
 
 <style>
@@ -61,9 +62,7 @@ const bgClass = backgroundColor === "light" ? "lightgrey-bg-a3" : "white-bg";
         <div class="it-card-profile it-card-body">
           <div>
             {descriptionTitle && (
-              <h4 class="fw-semibold fs-6 text-uppercase mb-0">
-                {descriptionTitle}
-              </h4>
+              <h4 class="it-label mb-0">{descriptionTitle}</h4>
             )}
             <div set:html={description} />
           </div>
@@ -74,7 +73,7 @@ const bgClass = backgroundColor === "light" ? "lightgrey-bg-a3" : "white-bg";
 </article>
 
 <article
-  class="it-card rounded shadow-sm border lightgrey-bg-a3 d-block d-lg-none"
+  class="it-card rounded shadow-sm border it-section-bg-light d-block d-lg-none"
 >
   {
     image && (
