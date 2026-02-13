@@ -1,22 +1,25 @@
 ---
 import { Accordion } from "@components/molecules/Accordion";
-import type { AccordionProps } from "@components/molecules/Accordion/types";
 import { SectionContainer } from "@components/organisms/SectionContainer";
+import { getSectionBgClass } from "@utils/background";
+import type { FAQSectionProps } from "./types";
 
-type Props = {
-  title: string;
-  accordion: AccordionProps;
-};
-const { title, accordion } = Astro.props;
+type Props = FAQSectionProps;
+const { title, accordion, background = "default" } = Astro.props;
 ---
 
-<SectionContainer>
+<SectionContainer className={getSectionBgClass(background)}>
   <div class="row align-items-top">
     <div class="col-12">
       <h2 class="pb-5">
         {title}
       </h2>
-      <Accordion {...accordion} fullWidth={false} allOpen={false} />
+      <Accordion
+        {...accordion}
+        fullWidth={false}
+        allOpen={false}
+        variant="background-active"
+      />
     </div>
   </div>
 </SectionContainer>
