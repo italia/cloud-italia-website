@@ -4,13 +4,12 @@ import PageAdapter from "@components/cms-adapters/datocms/PageAdapter.astro";
 import type { TagFragmentType } from "@graphql/fragment/commonFragments";
 import type { PageContentFragmentType } from "@graphql/fragment/page";
 import type { SeoFieldFragmentType } from "@graphql/fragment/seoFragments";
-import { AllPagesContentQuery, PageSeoQuery } from "@graphql/query/page";
 import type { SiteLocale } from "@graphql/types";
 import Layout from "@layouts/Layout.astro";
-import { executeQuery } from "@lib/datocms";
 import { type JsonLdPageData, extractFaqItems } from "@utils/JsonLD/seoJsonLd";
 import { linkResolver } from "@utils/linkResolver";
 import { removeLang } from "@utils/pathHelper";
+import { getCollection, getEntry } from "astro:content";
 
 export async function getStaticPaths() {
   type PathItem = {
@@ -28,14 +27,16 @@ export async function getStaticPaths() {
     };
   };
 
-  const response = await executeQuery(AllPagesContentQuery);
+  const allPages = await getCollection("page");
 
   const pathsPromises =
-    response.allPages?.flatMap((page) =>
-      page.locales.map(async (lang) => {
-        const seoRes = await executeQuery(PageSeoQuery, {
-          variables: { id: page.id, locale: lang },
-        });
+    allPages?.flatMap((page) =>
+      page.data.locales.map(async (lang) => {
+        const seoResCollection = await getEntry(
+          "global_seo",
+          `${page.id}_${lang}`,
+        );
+        const seoRes = seoResCollection?.data;
 
         const fullPath = linkResolver(page.id, lang);
 
@@ -47,12 +48,12 @@ export async function getStaticPaths() {
             lang: lang,
           },
           props: {
-            seoMeta: seoRes.page?.metaTags || [],
-            seo: seoRes.page?.seo || null,
+            seoMeta: seoRes?.metaTags || [],
+            seo: seoRes?.seo || null,
             id: page.id,
-            publishedAt: page.publishedAt,
-            updatedAt: seoRes.page?.updatedAt || page.updatedAt,
-            content: page.allContentLocales?.find(
+            publishedAt: page.data.publishedAt,
+            updatedAt: seoRes?.updatedAt || page.data.updatedAt,
+            content: page.data.allContentLocales?.find(
               (contentLocale) => contentLocale.locale === lang,
             )?.value,
           },

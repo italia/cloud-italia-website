@@ -1,22 +1,23 @@
-import { SidebarFragment } from "@graphql/fragment/commonFragments";
 import {
   FooterFragment,
   HeaderFragment,
-  SearchMenuFragment,
-} from "@graphql/fragment/sectionFragments";
+  SidebarFragment,
+} from "@graphql/fragment/layout";
+import { SearchMenuFragment } from "@graphql/fragment/sectionFragments";
 import { graphql } from "@graphql/graphql";
 
 export const LayoutQuery = graphql(
   `
-    query Layout($locale: SiteLocale!) {
-      layout(locale: $locale) {
+    query Layout {
+      layout {
+        id
         ...FooterFragment
         ...HeaderFragment
       }
-      homepage(locale: $locale) {
+      homepage {
         id
       }
-      search(locale: $locale) {
+      search {
         ...SearchMenuFragment
       }
     }
@@ -26,8 +27,8 @@ export const LayoutQuery = graphql(
 
 export const SidebarQuery = graphql(
   `
-    query Sidebar($locale: SiteLocale!) {
-      sidebarForArticle(locale: $locale) {
+    query Sidebar {
+      sidebarForArticle {
         ...SidebarFragment
       }
     }

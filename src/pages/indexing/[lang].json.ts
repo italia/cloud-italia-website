@@ -1,8 +1,5 @@
-import { AllDocumentsQuery } from "@graphql/fragment/indexing";
-import { LocalesQuery } from "@graphql/query/settings";
 import type { SiteLocale } from "@graphql/types";
 import { getGlobalSettings } from "@lib/dataFetcher";
-import { executeQuery } from "@lib/datocms";
 import {
   getCataloguesMapCategory,
   getCategoryName,
@@ -12,11 +9,14 @@ import {
 } from "@utils/indexing/getCategory";
 import * as Mappers from "@utils/indexing/indexingMappers";
 import type { APIRoute } from "astro";
+import { getEntry } from "astro:content";
 
 export async function getStaticPaths() {
-  const {
-    site: { locales },
-  } = await executeQuery(LocalesQuery);
+  const response = await getEntry("locales", "site-locales");
+
+  const locales = response?.data.locales;
+  if (!locales) throw new Error("Locales not found");
+
   return locales.map((lang) => ({
     params: {
       lang,
@@ -36,7 +36,12 @@ export const GET: APIRoute = async ({ params }) => {
   const globalSetting = await getGlobalSettings(lang);
   const analyzer = globalSetting?.analyzer || "standard";
 
-  const response = await executeQuery(AllDocumentsQuery);
+  const responseCollection = await getEntry("documents", "all-documents");
+  const response = responseCollection?.data;
+
+  if (!response)
+    return new Response("No documents to indexing", { status: 400 });
+
   const articles = response.allArticles;
   const insights = response.allInsights;
   const stories = response.allStoryItems;

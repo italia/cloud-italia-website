@@ -1,23 +1,15 @@
 ---
 import SidebarLayoutAdapter from "@components/cms-adapters/datocms/SidebarLayoutAdapter.astro";
 import type { ArticleContentFragmentType } from "@graphql/fragment/article";
-import type {
-  SidebarFragmentType,
-  TagFragmentType,
-} from "@graphql/fragment/commonFragments";
+import type { TagFragmentType } from "@graphql/fragment/commonFragments";
+import type { SidebarFragmentType } from "@graphql/fragment/layout";
 import type { SeoFieldFragmentType } from "@graphql/fragment/seoFragments";
-import {
-  AllArticlesContentQuery,
-  ArticleSeoQuery,
-} from "@graphql/query/article";
-import { SidebarQuery } from "@graphql/query/layout";
-
 import type { SiteLocale } from "@graphql/types";
 import Layout from "@layouts/Layout.astro";
-import { executeQuery } from "@lib/datocms";
 import { type JsonLdPageData } from "@utils/JsonLD/seoJsonLd";
 import { linkResolver } from "@utils/linkResolver";
 import { removeLang } from "@utils/pathHelper";
+import { getCollection, getEntry } from "astro:content";
 
 export async function getStaticPaths() {
   type PathItem = {
@@ -36,18 +28,22 @@ export async function getStaticPaths() {
     };
   };
 
-  const response = await executeQuery(AllArticlesContentQuery);
+  const response = await getCollection("article");
+  const sidebarEntry = await getEntry("sidebar", "sidebar");
+
+  const sidebarForArticle = sidebarEntry?.data;
+
+  if (!sidebarForArticle) throw new Error("Sidebar not found");
 
   const pathsPromises =
-    response.allArticles?.flatMap((page) =>
-      page.locales.map(async (lang) => {
-        const seoRes = await executeQuery(ArticleSeoQuery, {
-          variables: { id: page.id, locale: lang },
-        });
-
-        const { sidebarForArticle } = await executeQuery(SidebarQuery, {
-          variables: { locale: lang },
-        });
+    response?.flatMap((item) => {
+      const page = item.data;
+      return page.locales.map(async (lang) => {
+        const seoResCollection = await getEntry(
+          "global_seo",
+          `${page.id}_${lang}`,
+        );
+        const seoRes = seoResCollection?.data;
 
         const fullPath = linkResolver(page.id, lang);
 
@@ -59,19 +55,19 @@ export async function getStaticPaths() {
             lang: lang,
           },
           props: {
-            seoMeta: seoRes.article?.metaTags || [],
-            seo: seoRes.article?.seo ?? null,
+            seoMeta: seoRes?.metaTags || [],
+            seo: seoRes?.seo ?? null,
             id: page.id,
-            sidebar: sidebarForArticle,
+            sidebar: { ...sidebarForArticle, id: `sidebar_${page.id}` },
             content: page.allContentLocales?.find(
               (contentLocale) => contentLocale.locale === lang,
             )?.value,
             publishedAt: page.publishedAt,
-            updatedAt: seoRes.article?.updatedAt || page.updatedAt,
+            updatedAt: seoRes?.updatedAt || page.updatedAt,
           },
         };
-      }),
-    ) || [];
+      });
+    }) || [];
 
   const paths = await Promise.all(pathsPromises);
 

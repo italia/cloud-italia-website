@@ -1,16 +1,12 @@
 ---
 import PageAdapter from "@components/cms-adapters/datocms/PageAdapter.astro";
+
 import type { CatalogueContentFragmentType } from "@graphql/fragment/catalogue";
 import type { TagFragmentType } from "@graphql/fragment/commonFragments";
 import type { SeoFieldFragmentType } from "@graphql/fragment/seoFragments";
-import {
-  AllCataloguesContentQuery,
-  CatalogueSeoQuery,
-} from "@graphql/query/catalogue";
 
 import type { SiteLocale } from "@graphql/types";
 import Layout from "@layouts/Layout.astro";
-import { executeQuery } from "@lib/datocms";
 import { getLastUpdateCollection } from "@utils/getLastUpdateCollection";
 import {
   extractFaqItems,
@@ -19,6 +15,7 @@ import {
 } from "@utils/JsonLD/seoJsonLd";
 import { linkResolver } from "@utils/linkResolver";
 import { removeLang } from "@utils/pathHelper";
+import { getCollection, getEntry } from "astro:content";
 
 export async function getStaticPaths() {
   type PathItem = {
@@ -36,27 +33,24 @@ export async function getStaticPaths() {
     };
   };
 
-  const response = await executeQuery(AllCataloguesContentQuery);
-
-  const datesRegistry = {
-    news_item: response.lastNews[0]?.publishedAt,
-    story_item: response.lastStory[0]?.publishedAt,
-    webinar_item: response.lastWebinar[0]?.publishedAt,
-    resource: response.lastResourse[0]?.publishedAt,
-  };
+  const catalogues = await getCollection("catalogue");
 
   const pathsPromises =
-    response.allCatalogues?.flatMap((page) =>
-      page.locales.map(async (lang) => {
+    catalogues?.flatMap((item) => {
+      const page = item.data;
+      const datesRegistry = page.datesRegistry;
+      return page.locales.map(async (lang) => {
         const content = page.allContentLocales?.find(
           (contentLocale) => contentLocale.locale === lang,
         )?.value;
 
         const finalUpdateDate = getLastUpdateCollection(content, datesRegistry);
 
-        const seoRes = await executeQuery(CatalogueSeoQuery, {
-          variables: { id: page.id, locale: lang },
-        });
+        const seoResCollection = await getEntry(
+          "global_seo",
+          `${page.id}_${lang}`,
+        );
+        const seoRes = seoResCollection?.data;
 
         const fullPath = linkResolver(page.id, lang);
 
@@ -68,16 +62,16 @@ export async function getStaticPaths() {
             lang: lang,
           },
           props: {
-            seoMeta: seoRes.catalogue?.metaTags || [],
-            seo: seoRes.catalogue?.seo || null,
+            seoMeta: seoRes?.metaTags || [],
+            seo: seoRes?.seo || null,
             id: page.id,
             content: content,
             publishedAt: finalUpdateDate,
-            updatedAt: seoRes.catalogue?.updatedAt || page.updatedAt,
+            updatedAt: seoRes?.updatedAt || page.updatedAt,
           },
         };
-      }),
-    ) || [];
+      });
+    }) || [];
 
   const paths = await Promise.all(pathsPromises);
 

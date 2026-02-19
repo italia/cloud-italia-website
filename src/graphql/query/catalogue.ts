@@ -1,53 +1,30 @@
-import { CatalogueContentFragment } from "@graphql/fragment/catalogue";
-import { TagFragment } from "@graphql/fragment/commonFragments";
-import { SeoFieldFragment } from "@graphql/fragment/seoFragments";
+import { AllCataloguesRecordFragment } from "@graphql/fragment/catalogue";
 import { graphql } from "@graphql/graphql";
 
 export const AllCataloguesContentQuery = graphql(
   `
     query AllCataloguesContentQuery {
-      allCatalogues {
-        id
-        locales: _locales
-        publishedAt: _publishedAt
-        updatedAt: _updatedAt
-        allContentLocales: _allContentLocales {
-          locale
-          value {
-            ...CatalogueContentFragment
-          }
-        }
-      }
-      lastNews: allNewsItems(orderBy: _createdAt_DESC, first: 1) {
-        publishedAt: _publishedAt
-      }
-      lastStory: allStoryItems(orderBy: _createdAt_DESC, first: 1) {
-        publishedAt: _publishedAt
-      }
-      lastWebinar: allWebinarItems(orderBy: _createdAt_DESC, first: 1) {
-        publishedAt: _publishedAt
-      }
-      lastResourse: allResources(orderBy: _createdAt_DESC, first: 1) {
-        publishedAt: _publishedAt
+      allCatalogues(first: 2500) {
+        ...AllCataloguesRecordFragment
       }
     }
   `,
-  [CatalogueContentFragment],
+  [AllCataloguesRecordFragment],
 );
 
-export const CatalogueSeoQuery = graphql(
-  `
-    query CatalogueSeoQuery($id: ItemId!, $locale: SiteLocale!) {
-      catalogue(filter: { id: { eq: $id } }, locale: $locale) {
-        metaTags: _seoMetaTags {
-          ...TagFragment
-        }
-        seo {
-          ...SeoFieldFragment
-        }
-        updatedAt: _updatedAt
-      }
+export const LastItemsUpdateQuery = graphql(`
+  query LastItemsUpdate {
+    lastNews: allNewsItems(orderBy: _createdAt_DESC, first: 1) {
+      publishedAt: _publishedAt
     }
-  `,
-  [TagFragment, SeoFieldFragment],
-);
+    lastStory: allStoryItems(orderBy: _createdAt_DESC, first: 1) {
+      publishedAt: _publishedAt
+    }
+    lastWebinar: allWebinarItems(orderBy: _createdAt_DESC, first: 1) {
+      publishedAt: _publishedAt
+    }
+    lastResource: allResources(orderBy: _createdAt_DESC, first: 1) {
+      publishedAt: _publishedAt
+    }
+  }
+`);

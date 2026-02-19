@@ -1,15 +1,14 @@
-import {
-  StoryCardFragment,
-  TagFragment,
-} from "@graphql/fragment/commonFragments";
-import { SeoFieldFragment } from "@graphql/fragment/seoFragments";
-import { StoryContentFragment } from "@graphql/fragment/story";
+import { StoryCardFragment } from "@graphql/fragment/commonFragments";
+import { AllStoriesRecordFragment } from "@graphql/fragment/story";
 import { graphql } from "@graphql/graphql";
 
 export const AllStoryCardQuery = graphql(
   `
-    query AllStory {
-      allStoryItems {
+    query AllStory($dateLimit: Date) {
+      allStoryItems(
+        first: 2500
+        filter: { dateOfPublication: { gt: $dateLimit } }
+      ) {
         ...StoryCardFragment
       }
     }
@@ -20,36 +19,10 @@ export const AllStoryCardQuery = graphql(
 export const AllStoriesContentQuery = graphql(
   `
     query AllStoriesContentQuery {
-      allStoryItems {
-        id
-        locales: _locales
-        publishedAt: _publishedAt
-        updatedAt: _updatedAt
-        allContentLocales: _allContentLocales {
-          locale
-          value {
-            ...StoryContentFragment
-          }
-        }
+      allStoryItems(first: 2500) {
+        ...AllStoriesRecordFragment
       }
     }
   `,
-  [StoryContentFragment],
-);
-
-export const StorySeoQuery = graphql(
-  `
-    query StorySeoQuery($id: ItemId!, $locale: SiteLocale!) {
-      storyItem(filter: { id: { eq: $id } }, locale: $locale) {
-        metaTags: _seoMetaTags {
-          ...TagFragment
-        }
-        seo {
-          ...SeoFieldFragment
-        }
-        updatedAt: _updatedAt
-      }
-    }
-  `,
-  [TagFragment, SeoFieldFragment],
+  [AllStoriesRecordFragment],
 );

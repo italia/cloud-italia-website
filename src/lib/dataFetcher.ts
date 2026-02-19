@@ -1,9 +1,10 @@
+import { LayoutQuery } from "@graphql/query/layout";
 import { AllNewsQuery } from "@graphql/query/news";
 import { AllResourcesQuery } from "@graphql/query/resource";
 import { AllStoryCardQuery } from "@graphql/query/story";
 import { AllWebinarQuery } from "@graphql/query/webinar";
 import { executeQuery } from "@lib/datocms";
-import { getCollection } from "astro:content";
+import { getCollection, getEntry } from "astro:content";
 
 const wrap = (items: any[]) => items.map((item) => ({ data: item }));
 
@@ -54,3 +55,21 @@ export async function getGlobalSettings(lang: string) {
   );
   return globalSettingLocale?.data.value;
 }
+
+export const getLayout = async (isPreview: boolean) => {
+  if (isPreview) {
+    const res = await executeQuery(LayoutQuery, {
+      includeDrafts: true,
+    });
+    return {
+      id: "layout",
+      data: {
+        layout: res?.layout,
+        search: res?.search,
+        homepageId: res?.homepage?.id,
+      },
+    };
+  }
+  const entry = await getEntry("layout", "layout");
+  return entry;
+};

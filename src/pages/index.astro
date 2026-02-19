@@ -1,10 +1,10 @@
 ---
-import { LocalesQuery } from "@graphql/query/settings";
-import { executeQuery } from "@lib/datocms";
+import { getEntry } from "astro:content";
 
-const {
-  site: { locales },
-} = await executeQuery(LocalesQuery);
+const response = await getEntry("locales", "site-locales");
+
+const locales = response?.data.locales;
+if (!locales) throw new Error("Locales not found");
 ---
 
 <html lang="en">
