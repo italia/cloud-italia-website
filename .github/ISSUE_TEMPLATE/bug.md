@@ -13,9 +13,9 @@ Scrivi una descrizione chiara e concisa del bug.
 ## Per riprodurre
 Indica i passaggi per riprodurre il comportamento:
 
-1. Vai a '...'
-2. Clicca su '....'
-3. Scorri verso il basso fino a '....'
+1. Vai a "…"
+2. Clicca su "..."
+3. Scorri verso il basso fino a "..."
 4. Osserva l’errore
 
 ## Comportamento atteso
