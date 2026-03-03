@@ -21,5 +21,8 @@ const t = getI18n(lang);
   {brandLogo && <Icon icon={brandLogo} className="text-white me-3 icon-lg" />}
   <div>
     {label}
+    <span class="visually-hidden">
+      {t["link.external"]}
+    </span>
   </div>
 </a>
