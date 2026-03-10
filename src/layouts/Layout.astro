@@ -84,6 +84,20 @@ const isProd = import.meta.env.PROD;
       name="viewport"
       content="width=device-width, initial-scale=1, shrink-to-fit=no"
     />
+    <link
+      rel="preload"
+      href="/fonts/Titillium_Web/titillium-web-v10-latin-ext_latin-400.woff2"
+      as="font"
+      type="font/woff2"
+      crossorigin
+    />
+    <link
+      rel="preload"
+      href="/fonts/Lora/lora-v20-latin-ext_latin-400.woff2"
+      as="font"
+      type="font/woff2"
+      crossorigin
+    />
 
     <Seo data={[...siteMetaTag.faviconMetaTags, ...pageSeo]} />
 
