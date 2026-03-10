@@ -35,6 +35,9 @@ export default defineConfig({
     "/": "/it",
   },
   vite: {
+    ssr: {
+      noExternal: ["dataviz-components"],
+    },
     resolve: {
       alias: {
         "/^@(.*)$/": resolve("./src/*"),

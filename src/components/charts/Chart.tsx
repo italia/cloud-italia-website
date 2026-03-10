@@ -10,7 +10,7 @@ type ChartProps = {
   data: ChartFragmentType;
 };
 
-export const Chart = ({ data }: ChartProps) => {
+const Chart = ({ data }: ChartProps) => {
   const info: InfosType = {
     text: data.info ?? "",
     title: data.title ?? undefined,
@@ -40,3 +40,5 @@ export const Chart = ({ data }: ChartProps) => {
     </div>
   );
 };
+
+export default Chart;

@@ -1,6 +1,7 @@
 ---
 import { Link } from "@components/atoms/Link";
-import { Chart } from "@components/charts/Chart";
+
+import Chart from "@components/charts/Chart";
 import Loader from "@components/Loader.astro";
 import type { PanelProps } from "./types";
 
@@ -19,7 +20,7 @@ const { title, paragraph, chart, externalLink } = Astro.props;
   <div class="col-12">
     {
       chart && (
-        <Chart client:only="react" data={chart}>
+        <Chart client:visible data={chart}>
           <div slot="fallback">
             <Loader />
           </div>

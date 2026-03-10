@@ -99,6 +99,8 @@ const isProd = import.meta.env.PROD;
       crossorigin
     />
 
+    <link rel="preconnect" href="https://www.datocms-assets.com" crossorigin />
+
     <Seo data={[...siteMetaTag.faviconMetaTags, ...pageSeo]} />
 
     <JsonLDScripts jsonLd={jsonLd} />
