@@ -29,12 +29,14 @@ const { title, paragraph, chart, externalLink } = Astro.props;
     }
     {
       externalLink && (
-        <Link
-          label={externalLink.label}
-          titleIcon={externalLink.titleIcon}
-          url={externalLink.linkTo}
-          openInNewTab={true}
-        />
+        <div class="mt-2">
+          <Link
+            label={externalLink.label}
+            titleIcon={externalLink.titleIcon}
+            url={externalLink.linkTo}
+            openInNewTab={true}
+          />
+        </div>
       )
     }
   </div>
