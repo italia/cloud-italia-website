@@ -41,8 +41,10 @@ const deleteIndex = async (client: Client, index: string) => {
   try {
     console.log(`OPENSEARCH: DELETING INDEX ${index}`);
     await client.indices.delete({ index, ignore_unavailable: true });
-  } catch (error: any) {
-    console.error(`Error deleting index ${index}:`, error.message);
+  } catch (error: unknown) {
+    if (error instanceof Error) {
+      console.error(`Error deleting index ${index}:`, error.message);
+    }
   }
 };
 
