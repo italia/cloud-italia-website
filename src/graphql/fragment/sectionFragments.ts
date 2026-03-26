@@ -641,7 +641,7 @@ export const CardLinkListFragment = graphql(
     fragment CardLinkListFragment on CardLinkListRecord @_unmask {
       backgroundColor
       title
-      paragraph(markdown: true)
+      paragraph
       showInlineCard
       listContent {
         ...CardLinkFragment
