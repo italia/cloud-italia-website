@@ -13,4 +13,3 @@ image: /assets/img_news/2025-06-04-pnrr-300mln-pa-centrali-psn.png
 tags:
   - Articoli
 ---
-

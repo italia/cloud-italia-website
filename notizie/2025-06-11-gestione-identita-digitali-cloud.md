@@ -13,5 +13,3 @@ image: /assets/img_news/2025-06-11-gestione-identita-digitali-cloud.png
 tags:
   - Approfondimenti
 ---
-
-

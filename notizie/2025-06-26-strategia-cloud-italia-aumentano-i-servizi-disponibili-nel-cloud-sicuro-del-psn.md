@@ -12,4 +12,3 @@ link: https://innovazione.gov.it/notizie/articoli/strategia-cloud-italia-aumenta
 tags:
   - Articoli
 ---
-

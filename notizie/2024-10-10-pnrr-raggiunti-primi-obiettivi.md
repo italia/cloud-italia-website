@@ -13,5 +13,3 @@ image: /assets/img_news/2024-10-10-pnrr-raggiunti-primi-obiettivi.jpg
 tags:
   - Articoli
 ---
-
-

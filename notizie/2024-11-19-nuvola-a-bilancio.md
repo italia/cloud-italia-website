@@ -13,5 +13,3 @@ image: /assets/img_news/2024-11-19-nuvola-a-bilancio.jpg
 tags:
   - Approfondimenti
 ---
-
-

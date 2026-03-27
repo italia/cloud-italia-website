@@ -13,4 +13,3 @@ image: /assets/img_news/2025-06-23-pnrr-35-milioni-di-euro-per-migliorare-la-sic
 tags:
   - Articoli
 ---
-
