@@ -1,11 +1,13 @@
 import { buildClient } from "@datocms/cma-client-node";
+import * as crypto from "crypto";
 import * as dotenv from "dotenv";
 import * as fs from "fs";
 import matter from "gray-matter";
 import * as path from "path";
+
 dotenv.config();
 
-// 1. Definiamo la struttura del tuo Frontmatter
+const ASSETS_BASE_PATH = path.resolve(process.cwd(), "notizie");
 interface NewsFrontmatter {
   type: string;
   title: string;
@@ -22,6 +24,8 @@ interface NewsFrontmatter {
 }
 
 const topicCache = new Map<string, string>();
+const imageCache = new Map<string, string>();
+
 async function getOrCreateTopic(client: any, label: string) {
   const normalizedLabel = label.trim();
 
@@ -31,9 +35,9 @@ async function getOrCreateTopic(client: any, label: string) {
 
   const existingTopics = await client.items.list({
     filter: {
-      type: "topic", // <--- Sostituisci con lo Static ID del modello Topic
+      type: "news_topic",
       fields: {
-        label: { eq: normalizedLabel }, // Assumendo che il campo si chiami 'label'
+        label: { eq: normalizedLabel },
       },
     },
   });
@@ -43,7 +47,7 @@ async function getOrCreateTopic(client: any, label: string) {
     return existingTopics[0].id;
   }
 
-  console.log(`      ✨ Creazione nuovo Topic: ${normalizedLabel}`);
+  console.log(`      ✨ Creation of new Topic: ${normalizedLabel}`);
   const newTopic = await client.items.create({
     item_type: { type: "item_type", id: "ZmTkDRybSzmAn5nLCkSZHg" },
     label: {
@@ -53,6 +57,52 @@ async function getOrCreateTopic(client: any, label: string) {
 
   topicCache.set(normalizedLabel, newTopic.id);
   return newTopic.id;
+}
+
+async function getOrCreateImage(
+  client: any,
+  localPath: string,
+): Promise<string | null> {
+  if (!fs.existsSync(localPath)) {
+    console.warn(`   ⚠️ Image not found: ${localPath}`);
+    return null;
+  }
+
+  const fileBuffer = fs.readFileSync(localPath);
+  const fileName = path.basename(localPath);
+
+  const checksum = crypto.createHash("md5").update(fileBuffer).digest("hex");
+
+  if (imageCache.has(checksum)) return imageCache.get(checksum)!;
+
+  const existing = await client.uploads.list({
+    filter: { fields: { md5: { eq: checksum } } },
+  });
+
+  if (existing.length > 0) {
+    const id = existing[0].id;
+    imageCache.set(checksum, id);
+    return id;
+  }
+
+  console.log(`   ⬆️  Uploading new asset: ${fileName}...`);
+  const uploadRequest = await client.uploadRequest.create({
+    filename: fileName,
+  });
+
+  await fetch(uploadRequest.url, {
+    method: "PUT",
+    headers: {
+      ...uploadRequest.request_headers,
+      "Content-Length": fileBuffer.length.toString(),
+    },
+    body: fileBuffer,
+  });
+
+  const upload = await client.uploads.create({ path: uploadRequest.id });
+  imageCache.set(checksum, upload.id);
+
+  return upload.id;
 }
 
 async function migrate() {
@@ -65,80 +115,38 @@ async function migrate() {
 
   const client = buildClient({ apiToken, environment });
 
-  // Percorsi (modificali in base alla tua struttura)
-  const newsDirectory = path.resolve(process.cwd(), "notizie");
-  const publicFolder = path.resolve(process.cwd(), ".");
-
-  const files = fs.readdirSync(newsDirectory);
+  const files = fs.readdirSync(ASSETS_BASE_PATH);
 
   for (const file of files) {
     if (!file.endsWith(".md")) continue;
 
-    const filePath = path.join(newsDirectory, file);
+    const filePath = path.join(ASSETS_BASE_PATH, file);
     const fileContent = fs.readFileSync(filePath, "utf-8");
 
-    // Parsing con gray-matter castato alla nostra interfaccia
     const { data } = matter(fileContent) as unknown as {
       data: NewsFrontmatter;
       content: string;
     };
 
-    console.log(`🚀 Elaborazione: ${data.title}`);
+    console.log(`🚀 Processing: ${data.title}`);
 
-    let imageId: string | null = null;
-    const fullImagePath = path.join(newsDirectory, "img.jpeg");
-    console.log(fs.statSync(fullImagePath).size);
-    console.log("### image", fullImagePath);
-
-    if (fs.existsSync(fullImagePath)) {
-      try {
-        const image = await client.uploads.createFromLocalFile({
-          localPath: fullImagePath,
-          skipCreationIfAlreadyExists: true,
-        });
-
-        imageId = image.id;
-        console.log(`   ✅ Immagine caricata con ID: ${imageId}`);
-      } catch (error: any) {
-        console.error(
-          `   ❌ Errore caricamento ${fullImagePath}:`,
-          error.message,
-        );
-      }
+    if (!data.title || !data.link || !data.image) {
+      console.log(
+        `⏭️  Skip ${file}: Missing required fields (title, link, or image)`,
+      );
+      continue;
     }
 
-    console.log("### imageId", imageId);
-
     try {
+      const fullImagePath = path.join(ASSETS_BASE_PATH, data.image);
+      const imageId = await getOrCreateImage(client, fullImagePath);
+      if (!imageId) continue;
+
       let topicId: string | null = null;
       if (data.tags && data.tags.length > 0) {
         topicId = await getOrCreateTopic(client, data.tags[0]);
       }
 
-      /*  let imageId: string | null = null;
-       const fullImagePath = path.join(publicFolder, data.image);
-       console.log(fs.statSync(fullImagePath).size);
-       console.log("### image", fullImagePath);
- 
-       if (fs.existsSync(fullImagePath)) {
-         try {
-           const image = await client.uploads.createFromLocalFile({
-             localPath: fullImagePath,
-             skipCreationIfAlreadyExists: true,
-           });
- 
-           imageId = image.id;
-           console.log(`   ✅ Immagine caricata con ID: ${imageId}`);
-         } catch (error: any) {
-           console.error(
-             `   ❌ Errore caricamento ${fullImagePath}:`,
-             error.message,
-           );
-         }
-       }
- 
-       console.log("### imageId", imageId); */
-      /* Se non ci sta il link esterno skippare */
       const record = await client.items.create({
         item_type: { type: "item_type", id: "I7swbqFhSdekgCtytCwk9w" },
         title: {
@@ -148,7 +156,7 @@ async function migrate() {
           it: data.subtitle,
         },
         link: {
-          it: data.link || "",
+          it: data.link,
         },
         date_of_publication: { it: data.date },
         image: imageId
@@ -159,9 +167,9 @@ async function migrate() {
         topic: topicId ? { it: topicId } : null,
       });
 
-      console.log(`   ✅ Successo! ID Record: ${record.id}`);
+      console.log(`   ✅ Done! ID Record: ${record.id}`);
     } catch (error: any) {
-      console.error(`   ❌ Errore su ${file}:`, error.message);
+      console.error(`   ❌ Error ${file}:`, error.message);
     }
   }
 }
