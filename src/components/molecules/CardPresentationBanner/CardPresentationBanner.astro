@@ -17,6 +17,6 @@ const { title, description, icon, linkTo } = Astro.props;
     <Icon icon={icon} className="text-primary icon-xl" />
   </div>
   <div class="it-card-body">
-    <p class="it-card-text">{description}</p>
+    <Fragment set:html={description} />
   </div>
 </article>
