@@ -1,6 +1,7 @@
 ---
 import { NewsFeed } from "@components/organisms/NewsFeed";
 import type { NewsFeedFragmentType } from "@graphql/fragment/sectionFragments";
+import type { SectionBackground } from "@utils/background";
 import { DatoBlockModel } from "@utils/cmsMapper";
 import { getLocaleValue } from "@utils/getLocaleValue";
 import { linkResolver } from "@utils/linkResolver";
@@ -25,6 +26,7 @@ const buttonLabel = block.cta?.label;
   paragraph={block.paragraph}
   labelButton={buttonLabel}
   linkTo={buttonLink}
+  backgroundColor={block.backgroundColor as SectionBackground}
   tabs={block.tabs.map((tab) => {
     switch (tab.componentName) {
       case DatoBlockModel.NewsTab:
