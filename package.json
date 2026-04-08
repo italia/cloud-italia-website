@@ -17,7 +17,8 @@
     "index:staging": "dotenv -c -- bash -c 'NODE_TLS_REJECT_UNAUTHORIZED=0 bun run ./scripts/index-opensearch.ts staging'",
     "index:production": "dotenv -c -- bash -c 'bun run ./scripts/index-opensearch.ts production'",
     "sync-visual:staging": "dotenv -c staging -- bun ./scripts/sync-visual-select.ts",
-    "sync-visual:production": "dotenv -c production -- bun ./scripts/sync-visual-select.ts"
+    "sync-visual:production": "dotenv -c production -- bun ./scripts/sync-visual-select.ts",
+    "migrate:news": "dotenv -c staging -- bun ./scripts/migrate-news.ts"
   },
   "dependencies": {
     "@astrojs/check": "^0.9.6",
@@ -28,6 +29,7 @@
     "@datocms/astro": "^0.6.2",
     "@datocms/cda-client": "^0.2.7",
     "@datocms/cma-client": "^5.0.1",
+    "@datocms/cma-client-node": "^5.3.0",
     "@opensearch-project/opensearch": "^3.5.1",
     "@types/react": "^19.1.13",
     "@types/react-dom": "^19.1.9",
@@ -37,6 +39,7 @@
     "datocms-structured-text-to-plain-text": "^5.1.7",
     "dotenv": "^16.6.1",
     "gql.tada": "^1.8.12",
+    "gray-matter": "^4.0.3",
     "jsonwebtoken": "^9.0.2",
     "react": "^19.1.1",
     "react-dom": "^19.1.1"
