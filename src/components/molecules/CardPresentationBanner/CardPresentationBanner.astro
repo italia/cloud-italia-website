@@ -1,5 +1,5 @@
 ---
-import { Link } from "@components/atoms/Link";
+import { Icon } from "@components/atoms/Icon";
 import type { CardPresentationBannerProps } from "./types";
 
 type Props = CardPresentationBannerProps;
@@ -8,15 +8,15 @@ const { title, description, icon, linkTo } = Astro.props;
 ---
 
 <article
-  class="it-card it-card-banner it-card-inline it-card-height-full bg-transparent text-start"
+  class="it-card it-card-banner it-card-height-full rounded shadow-sm border"
 >
-  <div class="it-card-inline-content">
-    <div class="it-card-body">
-      <Fragment class="fs-5" set:html={description} />
-      <Link label={title} url={linkTo} />
-    </div>
+  <h3 class="it-card-title">
+    <a href={linkTo}>{title}</a>
+  </h3>
+  <div class="it-card-banner-icon-wrapper">
+    <Icon icon={icon} className="text-primary icon-xl" />
   </div>
-  <div class="px-3 it-card-banner-icon-wrapper align-items-start">
-    <img src={icon} alt="" style="width: 170px;" />
+  <div class="it-card-body">
+    <Fragment set:html={description} />
   </div>
 </article>
