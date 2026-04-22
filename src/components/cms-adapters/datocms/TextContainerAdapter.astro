@@ -16,7 +16,7 @@ type Props = {
 const { block, variant, heading = "h2" } = Astro.props;
 const { lang } = Astro.locals;
 
-const { labelButton, linkTo } = getCtaFields(block.cta, lang);
+const { labelButton, linkTo, openInNewTab } = getCtaFields(block.cta, lang);
 ---
 
 <TextContainer
@@ -26,4 +26,5 @@ const { labelButton, linkTo } = getCtaFields(block.cta, lang);
   labelButton={labelButton}
   linkTo={linkTo}
   heading={heading}
+  openInNewTab={openInNewTab}
 />
