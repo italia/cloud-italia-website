@@ -169,7 +169,7 @@ Redirects are centralized in the `astro.config.ts`.
 
 ### DATOCMS TEMPLATE
 
-[![Deploy DatoCMS starter](https://dashboard.datocms.com/deploy/button.svg)](https://dashboard.datocms.com/deploy?repo=github.com%3Aitalia%2Ftemplate-astro-siti-pa.git)
+[![Deploy DatoCMS starter](https://dashboard.datocms.com/deploy/button.svg)](https://dashboard.datocms.com/deploy?repo=italia/template-astro-siti-pa)
 
 or just
 
