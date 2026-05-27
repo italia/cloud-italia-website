@@ -655,10 +655,8 @@ type BrandRecord implements RecordInterface {
   _status: ItemStatus!
   _unpublishingScheduledAt: DateTime
   _updatedAt: DateTime!
-  brandLogo: String!
   id: ItemId!
-  label: String!
-  mainLogo: String!
+  logo: FileField!
   url: String!
 }
 
