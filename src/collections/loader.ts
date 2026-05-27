@@ -47,14 +47,7 @@ import {
 import { executeAutoPagingQuery, executeQuery } from "@lib/datocms";
 
 export const newsLoader = async () => {
-  const oneYearAgo = new Date();
-  oneYearAgo.setFullYear(oneYearAgo.getFullYear() - 4);
-  const dateLimit = oneYearAgo.toISOString();
-  const response = await executeAutoPagingQuery(AllNewsQuery, {
-    variables: {
-      dateLimit: dateLimit,
-    },
-  });
+  const response = await executeAutoPagingQuery(AllNewsQuery);
   return response?.allNewsItems || [];
 };
 
