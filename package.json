@@ -36,7 +36,7 @@
     "astro": "^5.17.2",
     "bootstrap-italia": "^2.18.1",
     "dataviz-components": "^0.3.21",
-    "datocms-structured-text-to-plain-text": "^5.1.7",
+    "datocms-structured-text-to-plain-text": "^6.0.0",
     "dotenv": "^17.4.2",
     "gql.tada": "^1.8.12",
     "gray-matter": "^4.0.3",
