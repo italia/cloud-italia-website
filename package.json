@@ -31,7 +31,7 @@
     "@datocms/cma-client": "^5.0.1",
     "@datocms/cma-client-node": "^5.3.0",
     "@opensearch-project/opensearch": "^3.6.0",
-    "@types/react": "^19.1.13",
+    "@types/react": "^19.2.17",
     "@types/react-dom": "^19.1.9",
     "astro": "^5.17.2",
     "bootstrap-italia": "^2.18.0",
@@ -41,7 +41,7 @@
     "gql.tada": "^1.8.12",
     "gray-matter": "^4.0.3",
     "jsonwebtoken": "^9.0.2",
-    "react": "^19.1.1",
+    "react": "^19.2.7",
     "react-dom": "^19.1.1"
   },
   "devDependencies": {
