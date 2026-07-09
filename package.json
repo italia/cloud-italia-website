@@ -21,7 +21,7 @@
     "migrate:news": "dotenv -c staging -- bun ./scripts/migrate-news.ts"
   },
   "dependencies": {
-    "@astrojs/check": "^0.9.6",
+    "@astrojs/check": "^0.9.9",
     "@astrojs/react": "^4.3.1",
     "@astrojs/sitemap": "^3.4.2",
     "@astrojs/ts-plugin": "^1.10.10",
