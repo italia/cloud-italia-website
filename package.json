@@ -45,7 +45,7 @@
     "react-dom": "^19.1.1"
   },
   "devDependencies": {
-    "@datocms/cli": "^3.1.16",
+    "@datocms/cli": "^4.0.28",
     "@types/jsonwebtoken": "^9.0.10",
     "@typescript-eslint/eslint-plugin": "^8.53.0",
     "@typescript-eslint/parser": "^8.53.0",
