@@ -48,7 +48,7 @@
     "@datocms/cli": "^4.0.28",
     "@types/jsonwebtoken": "^9.0.10",
     "@typescript-eslint/eslint-plugin": "^8.53.0",
-    "@typescript-eslint/parser": "^8.53.0",
+    "@typescript-eslint/parser": "^8.64.0",
     "astro-eslint-parser": "^1.4.0",
     "dotenv-cli": "^10.0.0",
     "eslint": "^10.4.0",
